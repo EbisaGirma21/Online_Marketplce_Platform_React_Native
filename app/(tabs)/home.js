@@ -32,10 +32,8 @@ export default function Home() {
           horizontal={true}
         >
           {productCategories.map((category, index) => (
-            <Pressable style={styles.categoryButton}>
-              <Text key={index} style={styles.myOption}>
-                {category}
-              </Text>
+            <Pressable key={index} style={styles.categoryButton}>
+              <Text style={styles.myOption}>{category}</Text>
             </Pressable>
           ))}
         </ScrollView>

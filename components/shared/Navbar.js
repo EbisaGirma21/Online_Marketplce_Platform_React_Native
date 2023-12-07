@@ -23,7 +23,12 @@ export default function Navbar() {
           <Text style={styles.buttonText}>Sign in</Text>
         </Link>
 
-        <Ionicons style={styles.icons} name="notifications" size={24} />
+        <View>
+          <Ionicons style={styles.notsicons} name="notifications" size={24} />
+          <View style={styles.badge}>
+            <Text style={{ color: "#fff" }}>12</Text>
+          </View>
+        </View>
         <Ionicons style={styles.icons} name="cart-outline" size={24} />
       </View>
     </View>
@@ -50,6 +55,22 @@ const styles = StyleSheet.create({
   },
   icons: {
     color: "#00a76f",
+  },
+  notsicons: {
+    color: "#00a76f",
+    position: "relative",
+  },
+  badge: {
+    backgroundColor: "#DC1A1A",
+    color: "#fff",
+    position: "absolute",
+    top: -8,
+    right: -5,
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+    padding: 2,
+    alignItems: "center",
   },
   buttonText: {
     color: "#637381",
