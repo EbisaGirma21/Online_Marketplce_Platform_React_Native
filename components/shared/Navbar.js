@@ -1,28 +1,34 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
-  const nav = useNavigation();
+  const navigation = useNavigation();
+  const { authState, onLogout } = useAuth();
 
   return (
     <View style={styles.container}>
       <View style={styles.navComponent}>
-        {/* <Ionicons
-          style={styles.icons}
-          name="menu-outline"
-          size={32}
-          onPress={() => nav.toggleDrawer()}
-        /> */}
+        {authState.authenticated ? (
+          <Ionicons
+            style={styles.icons}
+            name="menu-outline"
+            size={32}
+            onPress={() => navigation.toggleDrawer()}
+          />
+        ) : null}
+
         <Text style={styles.title}>My Market</Text>
       </View>
       <View style={styles.navComponent}>
-        <Link href="/auth">
-          <Text style={styles.buttonText}>Sign in</Text>
-        </Link>
-
+        {!authState.authenticated ? (
+          <Link href="/auth">
+            <Text style={styles.buttonText}>Sign in</Text>
+          </Link>
+        ) : null}
         <View>
           <Ionicons style={styles.notsicons} name="notifications" size={24} />
           <View style={styles.badge}>
@@ -30,6 +36,11 @@ export default function Navbar() {
           </View>
         </View>
         <Ionicons style={styles.icons} name="cart-outline" size={24} />
+        {authState.authenticated ? (
+          <Pressable onPress={onLogout}>
+            <Text style={styles.buttonText}>Sign out</Text>
+          </Pressable>
+        ) : null}
       </View>
     </View>
   );

@@ -1,14 +1,24 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
-import Navbar from "../components/shared/Navbar";
+import { AuthProvider } from "../context/AuthContext";
+import { ProductCatagoryProvider } from "../context/ProductCatagoryContext";
 
-export default function _layout() {
+const App = () => {
   return (
-    <Stack >
-      <Stack.Screen name="(tabs)" options={{ header: () => <Navbar /> }} />
-      <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+    <AuthProvider>
+      <ProductCatagoryProvider>
+        <Layout />
+      </ProductCatagoryProvider>
+    </AuthProvider>
+  );
+};
+
+function Layout() {
+  return (
+    <Stack>
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="auth" options={{ headerShown: false }} />
     </Stack>
   );
 }
+export default App;

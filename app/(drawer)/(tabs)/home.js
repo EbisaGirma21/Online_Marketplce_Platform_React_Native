@@ -1,43 +1,43 @@
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
-import React from "react";
-import SearchInput from "../../components/home/SearchInput";
+import React, { useContext, useEffect } from "react";
 import { Stack } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
-import Card from "../../components/home/Card";
-import ProductCard from "../../components/home/ProductCard";
-
-const productCategories = [
-  "Electronics",
-  "Clothing",
-  "Home & Furniture",
-  "Books",
-  "Beauty & Personal Care",
-  "Sports & Outdoors",
-  "Toys & Games",
-  "Automotive",
-  "Grocery",
-  "Health & Wellness",
-  "Movies & Music",
-];
+import Card from "../../../components/home/Card";
+import ProductCard from "../../../components/home/ProductCard";
+import TextField from "../../../components/shared/TextField";
+import ProductCatagorysContext from "../../../context/ProductCatagoryContext";
 
 export default function Home() {
+  const { productCatagories, fetchProductCatagories } = useContext(
+    ProductCatagorysContext
+  );
+
+  // catagory use effect
+  useEffect(() => {
+    fetchProductCatagories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <ScrollView style={styles.mainContainer}>
       <Stack.Screen />
       <ScrollView>
-        <SearchInput />
+        <TextField placeholder="Search your Product" />
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={styles.hscroll}
           horizontal={true}
         >
-          {productCategories.map((category, index) => (
-            <Pressable key={index} style={styles.categoryButton}>
-              <Text style={styles.myOption}>{category}</Text>
+          {productCatagories.map((catagory) => (
+            <Pressable key={catagory._id} style={styles.categoryButton}>
+              <Text style={styles.myOption}>{catagory.catagory}</Text>
             </Pressable>
           ))}
         </ScrollView>
-        <Image source={require("../../assets/web.png")} style={styles.mycard} />
+        <Image
+          source={require("../../../assets/web.png")}
+          style={styles.mycard}
+        />
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={styles.imageScroll}

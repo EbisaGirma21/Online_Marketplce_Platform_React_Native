@@ -1,28 +1,70 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Signin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { onLogin } = useAuth();
+  const navigation = useNavigation();
+
+  const handleSigninPress = async () => {
+    const result = await onLogin(email, password);
+    if (result && result.error) {
+      alert(result.message);
+    } else {
+      navigation.navigate("home");
+    }
+  };
+
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.container}>
-        <Text style={styles.titleText}>Welcome back to Your market!</Text>
-        <TextInput style={styles.textInput} placeholder="Email address" />
-        <TextInput style={styles.textInput} placeholder="Password" />
-        <Link style={styles.link} href="#">
-          <Text style={{ textAlign: "right" }}>Forgot Password?</Text>
-        </Link>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </Pressable>
-      </View>
-      <Link style={styles.signUp} href="/auth/signup">
-        <Text>
-          Don't have an account? <Text>Sign up</Text>
-        </Text>
-      </Link>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.mainContainer}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ width: "100%", height: "100%" }}>
+          <View style={styles.container}>
+            <Text style={styles.titleText}>Welcome back to Your market!</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Email address"
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder="Password"
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry
+              value={password}
+            />
+            <Link style={styles.link} href="#">
+              <Text style={{ textAlign: "right" }}>Forgot Password?</Text>
+            </Link>
+            <Pressable style={styles.button} onPress={handleSigninPress}>
+              <Text style={styles.buttonText}>Sign in</Text>
+            </Pressable>
+          </View>
+          <Link style={styles.signUp} href="/auth/signup">
+            <Text>
+              Don't have an account? <Text>Sign up</Text>
+            </Text>
+          </Link>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

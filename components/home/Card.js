@@ -16,15 +16,17 @@ export default function Card() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    width: 80,
-    height: 130,
+    width: 110,
+    height: 140,
     paddingBottom: 10,
     marginLeft: 10,
+    padding: 2,
   },
   productImage: {
-    width: 80,
-    height: "90%",
-    objectFit: "cover",
+    width: 100,
+    height: "100%",
+    objectFit: "contain",
+    alignSelf: "center",
   },
   productTitle: {
     height: "15%",

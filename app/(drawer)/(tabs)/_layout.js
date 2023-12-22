@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../../context/AuthContext";
 
-export default function _layout() {
+export default function AppTabs() {
+  const { authState } = useAuth();
+  const navigation = useNavigation();
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarHideOnKeyboard: true,
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
@@ -25,8 +34,17 @@ export default function _layout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="sell"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            authState.authenticated
+              ? navigation.navigate("sell")
+              : navigation.navigate("auth");
+          },
+        }}
         options={{
           tabBarIcon: () => (
             <FontAwesome
@@ -46,8 +64,17 @@ export default function _layout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="message"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            authState.authenticated
+              ? navigation.navigate("message")
+              : navigation.navigate("auth");
+          },
+        }}
         options={{
           tabBarIcon: () => (
             <MaterialCommunityIcons
@@ -69,6 +96,14 @@ export default function _layout() {
       />
       <Tabs.Screen
         name="profile"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            authState.authenticated
+              ? navigation.navigate("profile")
+              : navigation.navigate("auth");
+          },
+        }}
         options={{
           tabBarIcon: () => (
             <AntDesign style={styles.icons} z name="user" size={20} />

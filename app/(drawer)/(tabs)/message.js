@@ -1,8 +1,23 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
+import { useAuth } from "../../../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Message() {
+  const { authState } = useAuth();
+  const navigation = useNavigation();
+
+  // authState.authenticated effect
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!authState.authenticated) {
+        navigation.navigate("home");
+      }
+    };
+
+    fetchData();
+  }, [authState.authenticated]);
   return (
     <View>
       {/* Top scroll view */}
@@ -10,60 +25,59 @@ export default function Message() {
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
         <View style={styles.topCard}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <Text style={styles.topname}>Ebisa</Text>
         </View>
-       
       </ScrollView>
 
       {/* User cards */}
@@ -71,7 +85,7 @@ export default function Message() {
         <View style={styles.userContainer}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <View style={styles.container}>
             <Text style={styles.name}>Ebisa Girma</Text>
@@ -84,7 +98,7 @@ export default function Message() {
         <View style={styles.userContainer}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <View style={styles.container}>
             <Text style={styles.name}>Ebisa Girma</Text>
@@ -97,7 +111,7 @@ export default function Message() {
         <View style={styles.userContainer}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <View style={styles.container}>
             <Text style={styles.name}>Ebisa Girma</Text>
@@ -110,7 +124,7 @@ export default function Message() {
         <View style={styles.userContainer}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <View style={styles.container}>
             <Text style={styles.name}>Ebisa Girma</Text>
@@ -123,7 +137,7 @@ export default function Message() {
         <View style={styles.userContainer}>
           <Image
             style={styles.mypp}
-            source={require("../../assets/myphoto.png")}
+            source={require("../../../assets/myphoto.png")}
           />
           <View style={styles.container}>
             <Text style={styles.name}>Ebisa Girma</Text>
