@@ -1,152 +1,83 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable,
+  FlatList,
+} from "react-native";
 import React, { useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { Link } from "expo-router";
 
 export default function Message() {
-  const { authState } = useAuth();
+  const { authState, getMyCustomer, myCustomer } = useAuth();
   const navigation = useNavigation();
 
   // authState.authenticated effect
   useEffect(() => {
-    const fetchData = async () => {
+    const authChecker = async () => {
       if (!authState.authenticated) {
         navigation.navigate("home");
       }
     };
 
-    fetchData();
+    authChecker();
   }, [authState.authenticated]);
+
+  // authState.authenticated effect
+  useEffect(() => {
+    getMyCustomer();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <View style={styles.topCard}>
+      <Image
+        style={styles.mypp}
+        source={require("../../../assets/myphoto.png")}
+      />
+      <Text style={styles.topname}>{item.firstName}</Text>
+    </View>
+  );
+
+  const renderItem1 = ({ item }) => (
+    <Link href={`/chat/${item._id}`}>
+      <View style={styles.userContainer}>
+        <Image
+          style={styles.mypp}
+          source={require("../../../assets/myphoto.png")}
+        />
+        <View style={styles.container}>
+          <Text style={styles.name}>
+            {item.firstName + " " + item.lastName}
+          </Text>
+          <Text style={styles.message}>
+            Lorem ipsum dolor sit, amet consectetur adipisicing...
+          </Text>
+        </View>
+        <Text style={styles.time}>Today</Text>
+      </View>
+    </Link>
+  );
   return (
     <View>
-      {/* Top scroll view */}
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-        <View style={styles.topCard}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <Text style={styles.topname}>Ebisa</Text>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={myCustomer.customers}
+        keyExtractor={(item) => item}
+        renderItem={renderItem}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
 
       {/* User cards */}
       <View style={styles.mainContainer}>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>Ebisa Girma</Text>
-            <Text style={styles.message}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing...
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
-        </View>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>Ebisa Girma</Text>
-            <Text style={styles.message}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing...
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
-        </View>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>Ebisa Girma</Text>
-            <Text style={styles.message}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing...
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
-        </View>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>Ebisa Girma</Text>
-            <Text style={styles.message}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing...
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
-        </View>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>Ebisa Girma</Text>
-            <Text style={styles.message}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing...
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
-        </View>
+        <FlatList
+          data={myCustomer.customers}
+          keyExtractor={(item) => item}
+          renderItem={renderItem1}
+        />
       </View>
     </View>
   );
@@ -171,8 +102,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   mypp: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderRadius: 50,
   },
   name: {

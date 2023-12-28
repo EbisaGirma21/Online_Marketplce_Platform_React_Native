@@ -7,6 +7,8 @@ const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const user = require("./routes/user");
 const productCatagory = require("./routes/productCatagory");
+const product = require("./routes/product");
+const message = require("./routes/message");
 
 const app = express();
 const port = 8000;
@@ -33,3 +35,5 @@ mongoose
 
 app.use("/api/user", user);
 app.use("/api/productCatagory", productCatagory);
+app.use("/api/product", product);
+app.use("/api/message", message);

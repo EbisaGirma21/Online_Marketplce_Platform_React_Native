@@ -1,16 +1,27 @@
-import { View, StyleSheet, Image, Text, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Pressable,
+  FlatList,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
-import { Stack } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
-import Card from "../../../components/home/Card";
-import ProductCard from "../../../components/home/ProductCard";
-import TextField from "../../../components/shared/TextField";
-import ProductCatagorysContext from "../../../context/ProductCatagoryContext";
+import Card from "../../../../components/home/Card";
+import ProductCard from "../../../../components/home/ProductCard";
+import TextField from "../../../../components/shared/TextField";
+import ProductCatagorysContext from "../../../../context/ProductCatagoryContext";
+import ProductContext from "../../../../context/ProductContext";
 
 export default function Home() {
   const { productCatagories, fetchProductCatagories } = useContext(
     ProductCatagorysContext
   );
+  const { products, fetchProducts } = useContext(ProductContext);
+
+  const navigation = useNavigation();
 
   // catagory use effect
   useEffect(() => {
@@ -18,10 +29,29 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // product use effect
+  useEffect(() => {
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // product Press handler
+  const handleProductPress = (productId) => {
+    navigation.navigate("product_detail", { productId });
+  };
+
+  const renderItem = ({ item }) => (
+    <Pressable
+      style={styles.gridItem}
+      onPress={() => handleProductPress(item._id)}
+    >
+      <ProductCard catagory={item.brandName} />
+    </Pressable>
+  );
+
   return (
     <ScrollView style={styles.mainContainer}>
-      <Stack.Screen />
-      <ScrollView>
+      <View>
         <TextField placeholder="Search your Product" />
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -35,7 +65,7 @@ export default function Home() {
           ))}
         </ScrollView>
         <Image
-          source={require("../../../assets/web.png")}
+          source={require("../../../../assets/web.png")}
           style={styles.mycard}
         />
         <ScrollView
@@ -43,42 +73,23 @@ export default function Home() {
           style={styles.imageScroll}
           horizontal={true}
         >
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {products.map((product) => (
+            <Card
+              key={product._id}
+              productTitle={` ${product.brandName} ${product.modelName} ${product.productName}`}
+            />
+          ))}
         </ScrollView>
         <View style={styles.mainProductContainer}>
-          <View style={styles.gridRow}>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-          </View>
-          <View style={styles.gridRow}>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-          </View>
-          <View style={styles.gridRow}>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-            <View style={styles.gridItem}>
-              <ProductCard />
-            </View>
-          </View>
+          <FlatList
+            data={products}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            numColumns={2}
+            contentContainerStyle={styles.gridRow}
+          />
         </View>
-      </ScrollView>
+      </View>
     </ScrollView>
   );
 }
@@ -87,7 +98,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
     flex: 1,
-    backgroundColor: "#ddd",
   },
   hscroll: {
     height: 50,
@@ -127,18 +137,12 @@ const styles = StyleSheet.create({
   },
   mainProductContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     marginRight: 10,
     gap: 40,
   },
-  gridRow: {
-    flexDirection: "row",
-  },
+  gridRow: {},
   gridItem: {
-    flex: 1,
-    aspectRatio: 1,
-    backgroundColor: "#ddd",
-    height: 120,
+    flex: 0.5,
+    height: 160,
   },
 });

@@ -11,6 +11,7 @@ export default function Layout() {
       screenOptions={{
         swipeEnabled: authState.authenticated,
         header: () => <Navbar />,
+        // headerShown: false,
       }}
     >
       <Drawer.Screen

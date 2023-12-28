@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
 
-export default function Card() {
+export default function Card({ productTitle }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.productTitle}>My Product</Text>
+      <Text style={styles.productTitle}>{productTitle}</Text>
       <Image
         style={styles.productImage}
         source={require("../../assets/myImage.jpg")}

@@ -2,12 +2,19 @@ import React from "react";
 import { Stack } from "expo-router";
 import { AuthProvider } from "../context/AuthContext";
 import { ProductCatagoryProvider } from "../context/ProductCatagoryContext";
+import { ProductProvider } from "../context/ProductContext";
+import { NavigationContainer } from "@react-navigation/native";
+import { MessageProvider } from "../context/MessageContext";
 
 const App = () => {
   return (
     <AuthProvider>
       <ProductCatagoryProvider>
-        <Layout />
+        <ProductProvider>
+          <MessageProvider>
+            <Layout />
+          </MessageProvider>
+        </ProductProvider>
       </ProductCatagoryProvider>
     </AuthProvider>
   );

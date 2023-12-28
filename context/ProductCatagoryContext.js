@@ -19,7 +19,7 @@ const ProductCatagoryProvider = ({ children }) => {
         productNames,
         image,
       });
-      console.log(response);
+
       return response;
     } catch (e) {
       return { error: true, message: e.response.data.message };

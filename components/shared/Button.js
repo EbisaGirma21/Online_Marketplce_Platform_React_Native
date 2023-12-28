@@ -1,11 +1,11 @@
-import { View, Text, Button, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { COLOR } from "../../constants/color";
 
-export default function Buttton({ title }) {
+export default function Button({ title, onPress }) {
   return (
     <View>
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={onPress}>
         <Text style={{ color: COLOR.jade }}>{title}</Text>
       </Pressable>
     </View>

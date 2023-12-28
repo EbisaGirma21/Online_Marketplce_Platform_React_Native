@@ -22,10 +22,10 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid Password" });
     }
     const _id = user._id;
+    const role = user.role;
 
     const token = createToken(user._id);
-
-    res.status(200).json({ token, _id });
+    res.status(200).json({ token, _id, role });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Error" });
@@ -42,6 +42,7 @@ const registerUser = async (req, res) => {
     lastName,
     address,
     phoneNumber,
+    role: "buyer",
     email,
     password,
   });
@@ -55,6 +56,26 @@ const registerUser = async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
+      res.status(500).json({ message: "Error" });
+    });
+};
+//  create user
+const sellerRegistration = async (req, res) => {
+  const { kebeleId, nationalId, birthDate, specificLocation, id } = req.body;
+
+  const updatedValues = {
+    kebeleId,
+    nationalId,
+    birthDate,
+    specificLocation,
+    role: "seller",
+  };
+
+  User.updateOne({ _id: id }, { $set: updatedValues })
+    .then((result) => {
+      res.status(200).json({ message: "Your info submitted successfully" });
+    })
+    .catch((error) => {
       res.status(500).json({ message: "Error" });
     });
 };
@@ -105,10 +126,33 @@ const changePassword = async (req, res) => {
     res.status(500).json({ message: "Error" });
   }
 };
+const getCustomers = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    // Find the user by ID
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // Retrieve the customer IDs from the user's 'customers' array
+    const customerIds = user.customers;
+    // Use the customerIds to fetch the actual customer objects
+    const customers = await User.find({ _id: { $in: customerIds } });
+    res.status(200).json({ customers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+///endpoint to get the userDetails to design the chat Room header
 
 module.exports = {
   loginUser,
   getUser,
   registerUser,
   changePassword,
+  sellerRegistration,
+  getCustomers,
 };

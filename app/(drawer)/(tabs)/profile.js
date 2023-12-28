@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ToastAndroid,
 } from "react-native";
 import {
   AntDesign,
@@ -36,16 +37,16 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   // authState.authenticated effect
   useEffect(() => {
-    const fetchData = async () => {
+    const authChecker = async () => {
       if (!authState.authenticated) {
         navigation.navigate("home");
       }
     };
 
-    fetchData();
+    authChecker();
   }, [authState.authenticated]);
 
   // page checker
@@ -69,11 +70,11 @@ export default function Profile() {
         if (result && result.error) {
           alert(result.msg);
         } else {
-          alert("Password Changed Successfully");
+          showToast("Password Changed Successfully");
           setIsPassword(false);
         }
       } else {
-        alert("Password don't match");
+        showToast("Password don't match");
       }
     }
   };
@@ -82,6 +83,10 @@ export default function Profile() {
     onGetuser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState.authenticated]);
+  // toast Funtion
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
 
   if (!isEditable && !isPassWord) {
     return (

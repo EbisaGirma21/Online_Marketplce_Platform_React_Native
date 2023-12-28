@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
+import { Link } from "expo-router";
 
 export default function ProductCard({ catagory }) {
   return (
@@ -18,10 +19,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingBottom: 10,
     marginLeft: 10,
-    padding: 10,
+    padding: 5,
+    // marginBottom: 20,
   },
   productImage: {
-    height: "100%",
+    height: "85%",
     width: "100%",
     objectFit: "contain",
     alignSelf: "center",
