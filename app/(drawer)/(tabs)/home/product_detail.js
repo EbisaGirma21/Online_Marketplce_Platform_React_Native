@@ -4,8 +4,8 @@ import {
   Image,
   StyleSheet,
   Pressable,
-  ScrollView,
   Linking,
+  ScrollView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { COLOR } from "../../../../constants/color";
@@ -14,15 +14,17 @@ import ProductCard from "../../../../components/home/ProductCard";
 import ProductContext from "../../../../context/ProductContext";
 import { FlatList } from "react-native-gesture-handler";
 import { useAuth } from "../../../../context/AuthContext";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import MessageContext from "../../../../context/MessageContext";
-import * as SecureStorage from "expo-secure-store";
+// import { ScrollView } from "react-native-virtualized-view";
 
 const ProductDetail = () => {
   // my context api
   const { products, fetchProducts } = useContext(ProductContext);
   const { getCustomer, customer, id } = useAuth();
   const { sendMessage } = useContext(MessageContext);
+
+  const navigation = useNavigation();
 
   // my use state
   const [message, setMessage] = useState("");
@@ -92,11 +94,9 @@ const ProductDetail = () => {
       message
     );
     if (result && result.error) {
-      alert(result.message);
       console.log("Error Sent");
     } else {
-      console.log("Successfully Sent");
-      alert(result.message);
+      navigation.navigate("message");
     }
   };
 
@@ -160,10 +160,10 @@ const ProductDetail = () => {
         {id !== filteredProduct[0].productOwner && (
           <View style={styles.contactCard}>
             <Text>Start to chat with seller</Text>
-            <View style={styles.topInnerCard}>
+            <View style={styles.topInnerCards}>
               <Pressable style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
-                  Make an Offer
+                  Add to Cart
                 </Text>
               </Pressable>
               <Pressable style={styles.cButton}>
@@ -174,6 +174,11 @@ const ProductDetail = () => {
               <Pressable style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Last price
+                </Text>
+              </Pressable>
+              <Pressable style={styles.cButton}>
+                <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
+                  Add to Wishlist
                 </Text>
               </Pressable>
             </View>
@@ -263,7 +268,14 @@ const styles = StyleSheet.create({
     padding: 10,
     display: "flex",
     flexDirection: "row",
-    width: "100%",
+    width: "95%",
+    gap: 5,
+  },
+  topInnerCards: {
+    padding: 10,
+    display: "flex",
+    flexDirection: "row",
+    width: "95%",
     gap: 5,
   },
   reqButton: {
@@ -272,9 +284,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLOR.jade,
     borderRadius: 10,
+    display: "flex",
+    flexDirection: "row",
   },
+
   cButton: {
-    padding: 12,
+    width: "25%",
+    paddingTop: 8,
+    paddingBottom: 8,
     borderWidth: 1,
     borderColor: COLOR.jade,
     borderRadius: 10,

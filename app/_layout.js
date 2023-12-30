@@ -5,6 +5,7 @@ import { ProductCatagoryProvider } from "../context/ProductCatagoryContext";
 import { ProductProvider } from "../context/ProductContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { MessageProvider } from "../context/MessageContext";
+import { COLOR } from "../constants/color";
 
 const App = () => {
   return (
@@ -25,6 +26,12 @@ function Layout() {
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="auth" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="setting"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

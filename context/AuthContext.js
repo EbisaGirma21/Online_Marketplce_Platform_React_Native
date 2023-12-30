@@ -125,6 +125,14 @@ export const AuthProvider = ({ children }) => {
       return { error: true, message: e.response.data.message };
     }
   };
+  const fetchUsers = async () => {
+    try {
+      const result = await axios.get(`${API_URL}/user/`);
+      setUser(result.data);
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
 
   const getCustomer = async (id) => {
     try {
@@ -176,6 +184,7 @@ export const AuthProvider = ({ children }) => {
     onSellerRegistration: sellerRegistration,
     getCustomer,
     getMyCustomer,
+    fetchUsers,
     myCustomer,
     customer,
     user,

@@ -10,13 +10,13 @@ export default function Layout() {
     <Drawer
       screenOptions={{
         swipeEnabled: authState.authenticated,
-        header: () => <Navbar />,
-        // headerShown: false,
+        // header: () => <Navbar />,
       }}
     >
       <Drawer.Screen
         name="(tabs)"
         options={{
+          headerShown: false,
           drawerLabel: "Home",
           drawerActiveBackgroundColor: "#c7e2d9",
           drawerLabelStyle: {
@@ -28,6 +28,7 @@ export default function Layout() {
       <Drawer.Screen
         name="user"
         options={{
+          header: () => <Navbar />,
           drawerLabel: "User",
           drawerActiveBackgroundColor: "#c7e2d9",
           drawerLabelStyle: {
@@ -39,6 +40,7 @@ export default function Layout() {
       <Drawer.Screen
         name="product_catagory"
         options={{
+          header: () => <Navbar />,
           drawerLabel: "Product Catagory",
           drawerActiveBackgroundColor: "#c7e2d9",
           drawerLabelStyle: {
@@ -50,6 +52,7 @@ export default function Layout() {
       <Drawer.Screen
         name="product"
         options={{
+          header: () => <Navbar />,
           drawerLabel: "Product",
           drawerActiveBackgroundColor: "#c7e2d9",
           drawerLabelStyle: {

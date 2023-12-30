@@ -8,11 +8,13 @@ const {
   changePassword,
   sellerRegistration,
   getCustomers,
+  getUsers,
 } = require("../controllers/user");
 
 const router = express.Router();
 
 router.get("/:id", getUser);
+router.get("/", getUsers);
 router.post("/login", loginUser);
 router.post("/registration", registerUser);
 router.post("/change", changePassword);

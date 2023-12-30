@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Link } from "expo-router";
 
 export default function Message() {
-  const { authState, getMyCustomer, myCustomer } = useAuth();
+  const { authState, getMyCustomer, myCustomer, id } = useAuth();
   const navigation = useNavigation();
 
   // authState.authenticated effect
@@ -25,12 +25,12 @@ export default function Message() {
     };
 
     authChecker();
-  }, [authState.authenticated]);
+  }, []);
 
   // authState.authenticated effect
   useEffect(() => {
     getMyCustomer();
-  }, []);
+  }, [id]);
 
   const renderItem = ({ item }) => (
     <View style={styles.topCard}>
@@ -61,27 +61,36 @@ export default function Message() {
       </View>
     </Link>
   );
-  return (
-    <View>
-      <FlatList
-        data={myCustomer.customers}
-        keyExtractor={(item) => item}
-        renderItem={renderItem}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
 
-      {/* User cards */}
-      <View style={styles.mainContainer}>
+  if (myCustomer.customers && myCustomer.customers.length === 0) {
+    <View style={{ width: "100%", height: "100%", backgroundColor: "#000" }}>
+      <Text style={{ alignSelf: "center" }}>No chat exist yet!</Text>
+    </View>;
+  } else {
+    return (
+      <View>
         <FlatList
           data={myCustomer.customers}
-          keyExtractor={(item) => item}
-          renderItem={renderItem1}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          horizontal
+          showsHorizontalScrollIndicator={false}
         />
+
+        {/* User cards */}
+        <View style={styles.mainContainer}>
+          <FlatList
+            data={myCustomer.customers}
+            keyExtractor={(item) => item._id}
+            renderItem={renderItem1}
+          />
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 }
+
+// my styles
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 2,

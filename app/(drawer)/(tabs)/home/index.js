@@ -5,15 +5,19 @@ import {
   Text,
   Pressable,
   FlatList,
+  TextInput,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
-import { ScrollView } from "react-native-gesture-handler";
+// import { ScrollView } from "react-native-gesture-handler";
 import Card from "../../../../components/home/Card";
 import ProductCard from "../../../../components/home/ProductCard";
 import TextField from "../../../../components/shared/TextField";
 import ProductCatagorysContext from "../../../../context/ProductCatagoryContext";
 import ProductContext from "../../../../context/ProductContext";
+import { ScrollView } from "react-native-virtualized-view";
+import { Ionicons } from "@expo/vector-icons";
+import { COLOR } from "../../../../constants/color";
 
 export default function Home() {
   const { productCatagories, fetchProductCatagories } = useContext(
@@ -48,38 +52,52 @@ export default function Home() {
       <ProductCard catagory={item.brandName} />
     </Pressable>
   );
+  const renderItem1 = ({ item }) => (
+    <Pressable style={styles.categoryButton}>
+      <Text style={styles.myOption}>{item.catagory}</Text>
+    </Pressable>
+  );
+  const renderItem2 = ({ item }) => (
+    <Card
+      productTitle={` ${item.brandName} ${item.modelName} ${item.productName}`}
+    />
+  );
 
   return (
     <ScrollView style={styles.mainContainer}>
       <View>
-        <TextField placeholder="Search your Product" />
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          style={styles.hscroll}
-          horizontal={true}
-        >
-          {productCatagories.map((catagory) => (
-            <Pressable key={catagory._id} style={styles.categoryButton}>
-              <Text style={styles.myOption}>{catagory.catagory}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+        <View
+          style={{ backgroundColor: COLOR.jade, height: 40, width: "100%" }}
+        />
+
         <Image
           source={require("../../../../assets/web.png")}
           style={styles.mycard}
         />
-        <ScrollView
+        <View>
+          <TextInput placeholder="Search your Product" style={styles.search} />
+          <Pressable style={styles.searchButton}>
+            <Ionicons name="search" size={24} color={COLOR.jade} />
+          </Pressable>
+        </View>
+
+        <FlatList
+          data={productCatagories}
+          renderItem={renderItem1}
+          keyExtractor={(item) => item._id}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.hscroll}
+        />
+
+        <FlatList
+          data={products}
+          renderItem={renderItem2}
+          keyExtractor={(item) => item._id}
+          horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={styles.imageScroll}
-          horizontal={true}
-        >
-          {products.map((product) => (
-            <Card
-              key={product._id}
-              productTitle={` ${product.brandName} ${product.modelName} ${product.productName}`}
-            />
-          ))}
-        </ScrollView>
+        />
         <View style={styles.mainProductContainer}>
           <FlatList
             data={products}
@@ -101,8 +119,24 @@ const styles = StyleSheet.create({
   },
   hscroll: {
     height: 50,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     paddingTop: 8,
+  },
+  search: {
+    width: "95%",
+    borderWidth: 1,
+    borderColor: COLOR.jade,
+    alignSelf: "center",
+    padding: 8,
+    borderRadius: 50,
+    marginTop: -25,
+    backgroundColor: "#fff",
+    position: "relative",
+  },
+  searchButton: {
+    position: "absolute",
+    top: -15,
+    right: 20,
   },
   categoryButton: {
     backgroundColor: "#c7e2d9",
@@ -117,16 +151,15 @@ const styles = StyleSheet.create({
     color: "#00a76f",
   },
   imageScroll: {
-    marginTop: -20,
     height: 150,
     resizeMode: "contain",
   },
 
   mycard: {
-    width: "90%",
+    width: "100%",
     height: 200,
     alignSelf: "center",
-    borderRadius: 10,
+    backgroundColor: COLOR.jade,
   },
   myProduct: {
     width: 80,

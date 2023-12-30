@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
-import { Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../../context/AuthContext";
+import Navbar from "../../../components/shared/Navbar";
+import { Fontisto } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function AppTabs() {
   const { authState } = useAuth();
@@ -23,6 +26,7 @@ export default function AppTabs() {
           tabBarIcon: () => (
             <Ionicons style={styles.icons} name="home" size={20} />
           ),
+
           tabBarLabel: "Home",
           tabBarActiveBackgroundColor: "#c7e2d9",
           tabBarLabelStyle: {
@@ -36,6 +40,32 @@ export default function AppTabs() {
       />
 
       <Tabs.Screen
+        name="wish_list"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            authState.authenticated
+              ? navigation.navigate("wish_list")
+              : navigation.navigate("auth");
+          },
+        }}
+        options={{
+          header: () => <Navbar />,
+          tabBarIcon: () => (
+            <MaterialIcons name="favorite" style={styles.icons} size={20} />
+          ),
+          tabBarLabel: "WishList",
+          tabBarActiveBackgroundColor: "#c7e2d9",
+
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontWeight: "bold",
+            color: "#00a76f",
+            marginBottom: 5,
+          },
+        }}
+      />
+      <Tabs.Screen
         name="sell"
         listeners={{
           tabPress: (e) => {
@@ -46,6 +76,7 @@ export default function AppTabs() {
           },
         }}
         options={{
+          header: () => <Navbar />,
           tabBarIcon: () => (
             <FontAwesome
               style={styles.icons}
@@ -61,7 +92,6 @@ export default function AppTabs() {
             color: "#00a76f",
             marginBottom: 5,
           },
-          headerShown: false,
         }}
       />
 
@@ -76,6 +106,8 @@ export default function AppTabs() {
           },
         }}
         options={{
+          header: () => <Navbar />,
+
           tabBarIcon: () => (
             <MaterialCommunityIcons
               style={styles.icons}
@@ -91,7 +123,6 @@ export default function AppTabs() {
             color: "#00a76f",
             marginBottom: 5,
           },
-          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -108,6 +139,15 @@ export default function AppTabs() {
           tabBarIcon: () => (
             <AntDesign style={styles.icons} z name="user" size={20} />
           ),
+          headerTitle: "Profile",
+          headerRight: () => (
+            <Pressable
+              style={{ marginRight: 20 }}
+              onPress={() => navigation.navigate("setting")}
+            >
+              <Ionicons name="settings-sharp" size={24} color="black" />
+            </Pressable>
+          ),
           tabBarLabel: "Profile",
           tabBarActiveBackgroundColor: "#c7e2d9",
           tabBarLabelStyle: {
@@ -116,7 +156,6 @@ export default function AppTabs() {
             color: "#00a76f",
             marginBottom: 5,
           },
-          headerShown: false,
         }}
       />
     </Tabs>

@@ -97,6 +97,17 @@ const getUser = async (req, res) => {
   res.status(200).json(user);
 };
 
+// get a single user
+const getUsers = async (req, res) => {
+  const user = await User.find();
+
+  if (!user) {
+    return res.status(404).json({ error: "Users not found" });
+  }
+
+  res.status(200).json(user);
+};
+
 // change Password method
 const changePassword = async (req, res) => {
   const { id, currentPassword, newPassword } = req.body;
@@ -128,7 +139,6 @@ const changePassword = async (req, res) => {
 };
 const getCustomers = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   try {
     // Find the user by ID
     const user = await User.findById(id);
@@ -151,6 +161,7 @@ const getCustomers = async (req, res) => {
 module.exports = {
   loginUser,
   getUser,
+  getUsers,
   registerUser,
   changePassword,
   sellerRegistration,
