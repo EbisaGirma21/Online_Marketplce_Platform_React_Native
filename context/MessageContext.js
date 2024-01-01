@@ -31,10 +31,22 @@ const MessageProvider = ({ children }) => {
       return { error: true, message: e.response.data.message };
     }
   };
+  const updateStatus = async (recepientId) => {
+    const senderId = await SecureStorage.getItemAsync("user");
+    try {
+      const result = await axios.get(
+        `${API_URL}/message/updateChatStatus/${senderId}/${recepientId}`
+      );
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
 
   const valueToShare = {
     messages,
     sendMessage,
+    updateStatus,
     fetchMessages,
   };
 

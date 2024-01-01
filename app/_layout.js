@@ -17,11 +17,13 @@ const App = () => {
           </MessageProvider>
         </ProductProvider>
       </ProductCatagoryProvider>
-    </AuthProvider>
+    </AuthProvider> 
   );
 };
 
+
 function Layout() {
+  
   return (
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />

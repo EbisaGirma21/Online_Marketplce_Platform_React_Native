@@ -19,6 +19,7 @@ app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use(express.static("files"));
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
@@ -35,5 +36,6 @@ mongoose
 
 app.use("/api/user", user);
 app.use("/api/productCatagory", productCatagory);
+
 app.use("/api/product", product);
 app.use("/api/message", message);

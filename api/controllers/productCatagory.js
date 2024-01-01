@@ -36,27 +36,26 @@ const getProductCatagory = async (req, res) => {
 const createProductCatagory = async (req, res) => {
   const { catagory, productNames } = req.body;
 
+  const namesArray = productNames.split(",");
+
   let emptyFields = [];
   if (!catagory) {
     emptyFields.push("Catagory");
   }
-  if (!productNames) {
-    emptyFields.push("productNames");
+  if (!namesArray) {
+    emptyFields.push("namesArray");
   }
-  // if (!image) {
-  //   emptyFields.push("image");
-  // }
+
   if (emptyFields.length > 0) {
     return res.status(400).json({ error: "Please fill in all the fields" });
   }
   const product = [];
   try {
-    // const result = await cloudinary.uploader.upload(image, {
-    //   folder: "psms",
-    // });
-
+    const result = await cloudinary.uploader.upload(req.files.image[0].path, {
+      folder: "mymarket",
+    });
     // pushing product names
-    productNames.forEach((name) => {
+    namesArray.forEach((name) => {
       product.push({
         name: name,
       });
@@ -64,14 +63,14 @@ const createProductCatagory = async (req, res) => {
 
     const productCatagory = await ProductCatagory.create({
       catagory,
-      // image: {
-      //   public_id: result.public_id,
-      //   url: result.secure_url,
-      // },
-      productNames: product,
+      image: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
+      namesArray: product,
     });
-    // Push each name from the request body to the productNames array
-    productNames.forEach((name) => {
+    // Push each name from the request body to the namesArray array
+    namesArray.forEach((name) => {
       productCatagory.productNames.push({ name });
     });
 

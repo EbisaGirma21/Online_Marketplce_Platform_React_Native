@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const Message = require("../models/message");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, "my-jwt", { expiresIn: "3d" });
@@ -137,19 +138,53 @@ const changePassword = async (req, res) => {
     res.status(500).json({ message: "Error" });
   }
 };
+
 const getCustomers = async (req, res) => {
   const { id } = req.params;
+
   try {
     // Find the user by ID
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    // Retrieve the customer IDs from the user's 'customers' array
-    const customerIds = user.customers;
-    // Use the customerIds to fetch the actual customer objects
+
+    // Retrieve the customer objects from the user's 'customers' array
+    const customerData = user.customers;
+
+    // Extract customer IDs and fetch the actual customer objects
+    const customerIds = customerData.map((customer) => customer.customer);
     const customers = await User.find({ _id: { $in: customerIds } });
-    res.status(200).json({ customers });
+
+    // Combine customer data with the fetched customer objects
+    const customersWithStatus = await Promise.all(
+      customers.map(async (customer) => {
+        const customerStatus = customerData.find(
+          (data) => data.customer.toString() === customer._id.toString()
+        );
+
+        // Retrieve the recent message for each customer
+        const recentMessage = await Message.findOne({
+          $or: [
+            { senderId: customer._id, recepientId: user._id },
+            { senderId: user._id, recepientId: customer._id },
+          ],
+        })
+          .sort({ timestamp: -1 })
+          .limit(1);
+
+        return {
+          ...customer.toObject(),
+          chatStatus: customerStatus ? customerStatus.chatStatus : "unseen",
+          lastStatusChange: customerStatus
+            ? customerStatus.lastStatusChange
+            : null,
+          recentMessage: recentMessage ? recentMessage.toObject() : null,
+        };
+      })
+    );
+
+    res.status(200).json({ customers: customersWithStatus });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

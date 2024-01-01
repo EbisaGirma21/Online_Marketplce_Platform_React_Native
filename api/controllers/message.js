@@ -3,6 +3,7 @@ const Message = require("../models/message");
 const User = require("../models/user");
 
 //endpoint to post Messages and store it in the backend
+// endpoint to post Messages and store it in the backend
 const sendMessage = async (req, res) => {
   try {
     const { senderId, recepientId, messageType, message } = req.body;
@@ -24,7 +25,7 @@ const sendMessage = async (req, res) => {
     // Find the sender user by ID
     const recepientUser = await User.findById(recepientId);
     if (!recepientUser) {
-      return res.status(404).json({ error: "Recepient user not found" });
+      return res.status(404).json({ error: "Recipient user not found" });
     }
 
     // Check if the recipientId is already in the senderUser's customers array
@@ -46,6 +47,10 @@ const sendMessage = async (req, res) => {
 
     // Save the new message
     await newMessage.save();
+
+    // Update the chat status of the sender and recipient
+    await senderUser.changeChatStatus(recepientId, "unseen");
+    await recepientUser.changeChatStatus(senderId, "unseen");
 
     // Respond with success
     res.status(200).json({ message: "Message sent successfully" });
@@ -74,7 +79,29 @@ const getMessage = async (req, res) => {
   }
 };
 
+// Route to update chat status
+const updateStatus = async (req, res) => {
+  const { userId, customerId } = req.params;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update chat status
+    await user.changeChatStatus(customerId, "seen");
+    console.log("Chat status updated successfully");
+    res.status(200).json({ message: "Chat status updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getMessage,
   sendMessage,
+  updateStatus,
 };

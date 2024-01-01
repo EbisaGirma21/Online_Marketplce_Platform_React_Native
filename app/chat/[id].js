@@ -42,7 +42,7 @@ const ChatMessages = () => {
     // Start polling for new messages
     const intervalId = setInterval(() => {
       recepientId && fetchData();
-    }, 50);
+    }, 5000);
     // Clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
   }, [recepientId]);

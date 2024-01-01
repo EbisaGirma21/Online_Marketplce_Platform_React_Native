@@ -1,22 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Pressable,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ToastAndroid,
-} from "react-native";
-import {
-  AntDesign,
-  Entypo,
-  FontAwesome,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 

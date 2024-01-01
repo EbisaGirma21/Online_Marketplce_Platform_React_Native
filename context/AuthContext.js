@@ -170,6 +170,8 @@ export const AuthProvider = ({ children }) => {
     await SecureStorage.deleteItemAsync(TOKEN_KEY);
     await SecureStorage.deleteItemAsync(CURRENT_USER);
     await SecureStorage.deleteItemAsync(USER_ROLE);
+    setRole("");
+    setId("");
     axios.defaults.headers.common["Authorization"] = "";
     setAuthState({ token: null, authenticated: false });
     navigation.navigate("auth");
