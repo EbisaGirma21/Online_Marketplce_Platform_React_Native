@@ -9,7 +9,10 @@ const {
   sellerRegistration,
   getCustomers,
   getUsers,
+  updateUser,
+  updateEmail,
 } = require("../controllers/user");
+const upload = require("../middleware/multer");
 
 const router = express.Router();
 
@@ -20,5 +23,8 @@ router.post("/registration", registerUser);
 router.post("/change", changePassword);
 router.post("/sellerRegistration", sellerRegistration);
 router.get("/customers/:id", getCustomers);
+router.put("/:id", upload.uploadListingImages, updateUser);
+router.put("/info/:id", updateUser);
+router.put("/email/:id", updateEmail);
 
 module.exports = router;

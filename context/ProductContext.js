@@ -13,32 +13,15 @@ const ProductProvider = ({ children }) => {
     setProducts(response.data);
   };
 
-  const createProduct = async (
-    catagory,
-    productName,
-    brandName,
-    modelName,
-    specification,
-    amount,
-    price,
-    condition,
-    shortDescription,
-    location
-  ) => {
+  const createProduct = async (formData) => {
     const _id = await SecureStorage.getItemAsync("user");
     try {
-      const response = await axios.post(`${API_URL}/product`, {
-        catagory,
-        productName,
-        brandName,
-        modelName,
-        specification,
-        amount,
-        price,
-        condition,
-        shortDescription,
-        location,
-        owner: _id,
+      const response = await fetch(`${API_URL}/product`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
       });
       fetchProducts();
       return response;

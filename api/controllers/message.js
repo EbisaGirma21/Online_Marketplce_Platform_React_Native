@@ -7,36 +7,36 @@ const User = require("../models/user");
 const sendMessage = async (req, res) => {
   try {
     const { senderId, recepientId, messageType, message } = req.body;
-
     // Find the sender user by ID
     const senderUser = await User.findById(senderId);
     if (!senderUser) {
       return res.status(404).json({ error: "Sender user not found" });
     }
 
-    // Check if the recipientId is already in the senderUser's customers array
-    const recipientExists = senderUser.customers.includes(recepientId);
+    const recipientExists = senderUser.customers.some(
+      (customerData) =>
+        customerData.customer.toString() === recepientId.toString()
+    );
 
-    // If the recipient doesn't exist, add them to the customers array
     if (!recipientExists) {
       await senderUser.addCustomer(recepientId);
     }
-
+    console.log(recipientExists);
     // Find the sender user by ID
     const recepientUser = await User.findById(recepientId);
     if (!recepientUser) {
       return res.status(404).json({ error: "Recipient user not found" });
     }
 
-    // Check if the recipientId is already in the senderUser's customers array
-    const senderExists = recepientUser.customers.includes(senderId);
+    const senderExists = recepientUser.customers.some(
+      (customerData) => customerData.customer.toString() === senderId.toString()
+    );
 
-    // If the recipient doesn't exist, add them to the customers array
     if (!senderExists) {
       await recepientUser.addCustomer(senderId);
     }
+    console.log(senderExists);
 
-    // Create a new message
     const newMessage = new Message({
       senderId,
       recepientId,

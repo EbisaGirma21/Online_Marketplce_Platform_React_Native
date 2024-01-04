@@ -9,20 +9,21 @@ import {
   TextInput,
   Pressable,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-
+import * as ImagePicker from "expo-image-picker";
+import { FontAwesome } from "@expo/vector-icons";
+import { COLOR } from "../../constants/color";
 const PersonalInfo = () => {
   // user Information edition
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const [image, setImage] = useState(null);
 
   // context api
-  const { onGetuser, user } = useAuth();
+  const { onGetuser, user, updateProfile, updateInformation } = useAuth();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -30,9 +31,63 @@ const PersonalInfo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChangePress = () => {
-    navigation.navigate("setting");
-    showToast("Information Changed Successfully");
+  // user Information edition
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [address, setAddress] = useState(user.address);
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
+
+  // to pick an image from the
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
+  const handleChangePress = async () => {
+    const formData = new FormData();
+    if (image) {
+      const localUri = image;
+      const filename = localUri.split("/").pop();
+
+      formData.append("image", {
+        uri: localUri,
+        name: filename,
+        type: "image/jpeg",
+      });
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("address", address);
+      formData.append("phoneNumber", phoneNumber);
+    }
+    let result;
+    if (image) {
+      result = await updateProfile(formData);
+    } else {
+      result = await updateInformation(
+        firstName,
+        lastName,
+        address,
+        phoneNumber
+      );
+    }
+
+    if (result && result.error) {
+      alert(result.message);
+    } else {
+      navigation.navigate("_setting");
+      showToast("Information Changed Successfully");
+    }
   };
 
   // toast Funtion
@@ -52,35 +107,73 @@ const PersonalInfo = () => {
             <Text style={styles.myname}>
               {user.firstName} {user.lastName}
             </Text>
-            <Image
-              style={styles.mypp}
-              source={require("../../assets/myphoto.png")}
-            />
+            <TouchableOpacity style={styles.myppB} onPress={pickImage}>
+              <Image
+                style={styles.mypp}
+                source={
+                  image
+                    ? { uri: image }
+                    : user.image
+                    ? { uri: user.image.url }
+                    : require("../../assets/myphoto.png")
+                }
+              />
+            </TouchableOpacity>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                width: "95%",
+                position: "absolute",
+                justifyContent: "center",
+                top: 175,
+                right: -20,
+              }}
+            >
+              <TouchableOpacity
+                onPress={pickImage}
+                style={{
+                  backgroundColor: "#000",
+                  borderRadius: 50,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: COLOR.jade,
+                }}
+              >
+                <FontAwesome
+                  name="photo"
+                  size={14}
+                  color="#fff"
+                  style={{ alignSelf: "center" }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.infoContainer}>
             <TextInput
               style={styles.textInput}
               placeholder="First ame"
               onChangeText={(text) => setFirstName(text)}
-              value={user.firstName}
+              value={firstName}
             />
             <TextInput
               style={styles.textInput}
               placeholder="Last name"
               onChangeText={(text) => setLastName(text)}
-              value={user.lastName}
+              value={lastName}
             />
             <TextInput
               style={styles.textInput}
               placeholder="Address"
               onChangeText={(text) => setAddress(text)}
-              value={user.address}
+              value={address}
             />
             <TextInput
               style={styles.textInput}
               placeholder="Phone number"
               onChangeText={(text) => setPhoneNumber(text)}
-              value={user.phoneNumber}
+              value={phoneNumber}
             />
 
             <Pressable style={styles.editButton} onPress={handleChangePress}>
@@ -129,14 +222,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#00a76f",
     position: "absolute",
-    top: 110,
+    top: 70,
   },
   mypp: {
-    width: 70,
-    height: 70,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  myppB: {
+    width: 100,
+    height: 100,
     borderRadius: 50,
     position: "absolute",
-    top: 140,
+    top: 110,
   },
   editButton: {
     width: "70%",

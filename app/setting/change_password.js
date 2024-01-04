@@ -22,7 +22,7 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // context api
-  const {  onChange, user } = useAuth();
+  const { onChange, user } = useAuth();
   const navigation = useNavigation();
 
   const handleChangePassword = async () => {
@@ -32,7 +32,7 @@ const ChangePassword = () => {
       if (result && result.error) {
         alert(result.msg);
       } else {
-        navigation.navigate("setting");
+        navigation.navigate("_setting");
         showToast("Password Changed Successfully");
       }
     } else {
@@ -40,7 +40,6 @@ const ChangePassword = () => {
     }
   };
 
-  
   // toast Funtion
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -60,7 +59,11 @@ const ChangePassword = () => {
             </Text>
             <Image
               style={styles.mypp}
-              source={require("../../assets/myphoto.png")}
+              source={
+                user.image
+                  ? { uri: user.image.url }
+                  : require("../../assets/myphoto.png")
+              }
             />
           </View>
           <View style={styles.infoContainer}>

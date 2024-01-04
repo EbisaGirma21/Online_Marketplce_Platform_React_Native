@@ -166,6 +166,54 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (formData) => {
+    try {
+      const response = await fetch(`${API_URL}/user/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+
+      return response;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
+  const updateInformation = async (
+    firstName,
+    lastName,
+    address,
+    phoneNumber
+  ) => {
+    try {
+      const result = await axios.put(`${API_URL}/user/info/${id}`, {
+        firstName,
+        lastName,
+        address,
+        phoneNumber,
+      });
+
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
+  const updateEmail = async (email) => {
+    try {
+      const result = await axios.put(`${API_URL}/user/email/${id}`, {
+        email,
+      });
+
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
   const logout = async () => {
     await SecureStorage.deleteItemAsync(TOKEN_KEY);
     await SecureStorage.deleteItemAsync(CURRENT_USER);
@@ -187,6 +235,9 @@ export const AuthProvider = ({ children }) => {
     getCustomer,
     getMyCustomer,
     fetchUsers,
+    updateProfile,
+    updateInformation,
+    updateEmail,
     myCustomer,
     customer,
     user,

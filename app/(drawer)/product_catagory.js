@@ -2,11 +2,9 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  Pressable,
   Image,
   FlatList,
-  Alert,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import ProductCard from "../../components/home/ProductCard";
@@ -15,7 +13,6 @@ import { COLOR } from "../../constants/color";
 import * as ImagePicker from "expo-image-picker";
 import { TextInput } from "react-native-gesture-handler";
 import ProductCatagorysContext from "../../context/ProductCatagoryContext";
-import * as FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function ProductCatagory() {
@@ -24,7 +21,6 @@ export default function ProductCatagory() {
   // my input attribute
   const [catagory, setCatagory] = useState("");
   const [image, setImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
   const [productNames, setProductNames] = useState([]);
 
   // context api
@@ -52,15 +48,7 @@ export default function ProductCatagory() {
       });
 
       if (!result.canceled) {
-        const uri = result.assets[0].uri;
-        const type = result.assets[0].type;
-        const uriComponents = uri.split("/");
-        const name = uriComponents[uriComponents.length - 1];
-
         setImage(result.assets[0].uri);
-
-        const images = { uri, type, name };
-        setImageFile(images);
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -104,12 +92,12 @@ export default function ProductCatagory() {
     return (
       <View>
         <View style={styles.topPart}>
-          <Pressable
+          <TouchableOpacity
             style={styles.button}
             onPress={() => handleAddPress(isAddPage)}
           >
             <Text style={{ color: COLOR.jade }}>Add Catagory</Text>
-          </Pressable>
+          </TouchableOpacity>
           <View style={styles.search}>
             <TextField placeholder="Search your Catagory" />
           </View>
@@ -132,7 +120,7 @@ export default function ProductCatagory() {
         <Text style={styles.formTitle}>Add Your Product</Text>
         <View style={styles.infoContainer}>
           <View style={{ display: "flex", flexDirection: "row", width: "95%" }}>
-            <Pressable style={styles.upButton} onPress={pickImage}>
+            <TouchableOpacity style={styles.upButton} onPress={pickImage}>
               <AntDesign
                 name="cloudupload"
                 size={54}
@@ -144,7 +132,7 @@ export default function ProductCatagory() {
               >
                 Choose a photo
               </Text>
-            </Pressable>
+            </TouchableOpacity>
             <View style={styles.myImageView}>
               {image ? (
                 <Image style={styles.myImage} source={{ uri: image }} />
@@ -170,7 +158,7 @@ export default function ProductCatagory() {
             value={productNames.join(",")}
           />
 
-          <Pressable
+          <TouchableOpacity
             style={styles.button}
             onPress={() => handleAddPress(isAddPage)}
           >
@@ -179,7 +167,7 @@ export default function ProductCatagory() {
             >
               <Text>Add Catagory</Text>
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     );

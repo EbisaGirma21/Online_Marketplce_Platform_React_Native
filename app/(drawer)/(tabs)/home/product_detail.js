@@ -3,7 +3,7 @@ import {
   Text,
   Image,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   Linking,
   ScrollView,
 } from "react-native";
@@ -21,7 +21,7 @@ import MessageContext from "../../../../context/MessageContext";
 const ProductDetail = () => {
   // my context api
   const { products, fetchProducts } = useContext(ProductContext);
-  const { getCustomer, customer, id } = useAuth();
+  const { getCustomer, customer, id, authState } = useAuth();
   const { sendMessage } = useContext(MessageContext);
 
   const navigation = useNavigation();
@@ -58,7 +58,7 @@ const ProductDetail = () => {
   const renderItem = ({ item }) => (
     <View style={styles.productList}>
       <View style={{ width: "35%" }}>
-        <ProductCard catagory={item.brandName} />
+        <ProductCard catagory={item.brandName} imageUrl={item.image.url} />
       </View>
       <View style={{ width: "55%", alignSelf: "center" }}>
         <Text style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}>
@@ -85,18 +85,22 @@ const ProductDetail = () => {
     }`;
     Linking.openURL(smsUrl);
   };
-
   const handleStartChatPress = async () => {
-    const messageType = "text";
-    const result = await sendMessage(
-      filteredProduct[0].productOwner,
-      messageType,
-      message
-    );
-    if (result && result.error) {
-      console.log("Error Sent");
+    if (!authState.authenticated) {
+      navigation.navigate("auth");
     } else {
-      navigation.navigate("message");
+      const messageType = "text";
+      const result = await sendMessage(
+        filteredProduct[0].productOwner,
+        messageType,
+        message
+      );
+      if (result && result.error) {
+        console.log("Error Sent");
+      } else {
+        setMessage("");
+        navigation.navigate("message");
+      }
     }
   };
 
@@ -104,7 +108,11 @@ const ProductDetail = () => {
     <ScrollView>
       <View>
         <Image
-          source={require("../../../../assets/myImage.jpg")}
+          source={
+            filteredProduct[0].image.url
+              ? { uri: filteredProduct[0].image.url }
+              : require("../../../../assets/myImage.jpg")
+          }
           style={styles.myProduct}
         />
         <View style={styles.topCard}>
@@ -146,14 +154,20 @@ const ProductDetail = () => {
           </View>
           {id !== filteredProduct[0].productOwner && (
             <View style={styles.topInnerCard}>
-              <Pressable style={styles.reqButton} onPress={handleSendTextPress}>
+              <TouchableOpacity
+                style={styles.reqButton}
+                onPress={handleSendTextPress}
+              >
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Request Call Back
                 </Text>
-              </Pressable>
-              <Pressable style={styles.callButton} onPress={handleCallPress}>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.callButton}
+                onPress={handleCallPress}
+              >
                 <Text style={{ alignSelf: "center", color: "#fff" }}>Call</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -161,40 +175,40 @@ const ProductDetail = () => {
           <View style={styles.contactCard}>
             <Text>Start to chat with seller</Text>
             <View style={styles.topInnerCards}>
-              <Pressable style={styles.cButton}>
+              <TouchableOpacity style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Add to Cart
                 </Text>
-              </Pressable>
-              <Pressable style={styles.cButton}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Is this avialable
                 </Text>
-              </Pressable>
-              <Pressable style={styles.cButton}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Last price
                 </Text>
-              </Pressable>
-              <Pressable style={styles.cButton}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cButton}>
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Add to Wishlist
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
             <TextField
               placeholder={"Write your message here"}
               value={message}
               onChangeText={(text) => setMessage(text)}
             />
-            <Pressable
+            <TouchableOpacity
               style={styles.chatButton}
               onPress={() => handleStartChatPress()}
             >
               <Text style={{ color: "#fff", alignSelf: "center" }}>
                 Start Chat
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         )}
         <View style={styles.detailCard}>
@@ -202,32 +216,12 @@ const ProductDetail = () => {
             <Text
               style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}
             >
-              Name: {filteredProduct[0].productName}
+              Location: {filteredProduct[0].productLocation}
             </Text>
             <Text
               style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}
             >
-              Brand:{filteredProduct[0].brandName}
-            </Text>
-            <Text style={{ color: COLOR.jade, fontWeight: "bold", padding: 5 }}>
-              Price: ETB {filteredProduct[0].price}
-            </Text>
-          </View>
-          <View style={{ width: "50%" }}>
-            <Text
-              style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}
-            >
-              Model: {filteredProduct[0].modelName}
-            </Text>
-            <Text
-              style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}
-            >
-              Spec:{filteredProduct[0].specification}
-            </Text>
-            <Text
-              style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}
-            >
-              Condition {filteredProduct[0].condition}
+              Desc: {filteredProduct[0].shortDescription}
             </Text>
           </View>
         </View>
@@ -255,6 +249,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
     alignSelf: "center",
+    objectFit: "contain",
   },
   topCard: {
     width: "95%",

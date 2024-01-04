@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const Message = require("../models/message");
+const cloudinary = require("../utils/cloudinary");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, "my-jwt", { expiresIn: "3d" });
@@ -141,7 +142,6 @@ const changePassword = async (req, res) => {
 
 const getCustomers = async (req, res) => {
   const { id } = req.params;
-
   try {
     // Find the user by ID
     const user = await User.findById(id);
@@ -175,23 +175,84 @@ const getCustomers = async (req, res) => {
 
         return {
           ...customer.toObject(),
-          chatStatus: customerStatus ? customerStatus.chatStatus : "unseen",
-          lastStatusChange: customerStatus
-            ? customerStatus.lastStatusChange
-            : null,
+          chatStatus: customerStatus.chatStatus,
+          lastStatusChange: customerStatus.lastStatusChange,
           recentMessage: recentMessage ? recentMessage.toObject() : null,
         };
       })
     );
 
-    res.status(200).json({ customers: customersWithStatus });
+    // Sort customersWithStatus by lastStatusChange in descending order
+    const sortedCustomers = customersWithStatus.sort(
+      (a, b) => new Date(b.lastStatusChange) - new Date(a.lastStatusChange)
+    );
+
+    res.status(200).json({ customers: sortedCustomers });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-///endpoint to get the userDetails to design the chat Room header
+// Update user details
+const updateUser = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    let result;
+
+    if (req.files) {
+      result = await cloudinary.uploader.upload(req.files.image[0].path, {
+        folder: "mymarket",
+      });
+    }
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user details based on the request body
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.address = req.body.address || user.address;
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+
+    // Update the 'image' object if needed
+    if (result) {
+      user.image.public_id = result.public_id || user.image.public_id;
+      user.image.url = result.url || user.image.url;
+    }
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    return res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+// Update email details
+const updateEmail = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.email = email || user.email;
+    const updatedUser = await user.save();
+
+    return res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   loginUser,
@@ -201,4 +262,6 @@ module.exports = {
   changePassword,
   sellerRegistration,
   getCustomers,
+  updateUser,
+  updateEmail,
 };

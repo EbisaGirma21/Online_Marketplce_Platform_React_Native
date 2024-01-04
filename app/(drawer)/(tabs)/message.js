@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Link } from "expo-router";
 import { COLOR } from "../../../constants/color";
 import MessageContext from "../../../context/MessageContext";
+import { formatDistanceToNow } from "date-fns";
 
 export default function Message() {
   const { authState, getMyCustomer, myCustomer, id } = useAuth();
@@ -36,92 +37,107 @@ export default function Message() {
   }, [id]);
 
   const handleUserPress = async (id) => {
+    navigation.navigate(`chat/my_chat`, { id: id });
     console.log(id);
 
     await updateStatus(id);
   };
-
   const renderItem = ({ item }) => (
     <View style={styles.topCard}>
       <Image
         style={styles.mypp}
-        source={require("../../../assets/myphoto.png")}
+        source={
+          item.image.url
+            ? { uri: item.image.url }
+            : require("../../../assets/myphoto.png")
+        }
       />
       <Text style={styles.topname}>{item.firstName}</Text>
     </View>
   );
 
   const renderItem1 = ({ item }) => (
-    <Pressable onPress={() => handleUserPress(item._id)}>
-      <Link href={`/chat/${item._id}`}>
-        <View style={styles.userContainer}>
-          <Image
-            style={styles.mypp}
-            source={require("../../../assets/myphoto.png")}
-          />
-          <View style={styles.container}>
-            <Text style={styles.name}>
-              {item.firstName + " " + item.lastName}
-            </Text>
-            <Text
-              style={{
-                color: `${item.chatStatus !== "unseen" ? "#637381" : "#000"}`,
-                fontWeight: "bold",
-              }}
-            >
-              {item.recentMessage.message}
-            </Text>
-          </View>
-          <Text style={styles.time}>Today</Text>
+    <Pressable
+      onPress={() => handleUserPress(item._id)}
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        padding: 5,
+        backgroundColor: "#fff",
+        borderBottomWidth: 1,
+        borderBottomColor: COLOR.swansdown,
+      }}
+    >
+      <View style={styles.userContainer}>
+        <Image
+          style={styles.mypp}
+          source={
+            item.image.url
+              ? { uri: item.image.url }
+              : require("../../../assets/myphoto.png")
+          }
+        />
+        <View style={styles.container}>
+          <Text style={styles.name}>
+            {item.firstName + " " + item.lastName}
+          </Text>
+          <Text
+            style={{
+              color: `${item.chatStatus !== "unseen" ? "#637381" : "#000"}`,
+              fontWeight: "bold",
+            }}
+          >
+            {item.recentMessage.message}
+          </Text>
         </View>
-      </Link>
+      </View>
+      <Text style={styles.time}>
+        {formatDistanceToNow(item.lastStatusChange, { addSuffix: true }) ||
+          "Long time ago"}
+      </Text>
     </Pressable>
   );
   if (myCustomer.customers && myCustomer.customers.length === 0) {
     return (
-      <View style={{ width: "100%", height: "100%", backgroundColor: "#000" }}>
+      <View style={{ width: "100%", height: "100%", justifyContent: "center" }}>
         <Text style={{ alignSelf: "center" }}>No chat exist yet!</Text>
       </View>
     );
-  } else {
-    return (
-      <View>
+  }
+  return (
+    <View>
+      <FlatList
+        data={myCustomer.customers}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
+
+      {/* User cards */}
+      <View style={styles.mainContainer}>
         <FlatList
           data={myCustomer.customers}
           keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-          horizontal
-          showsHorizontalScrollIndicator={false}
+          renderItem={renderItem1}
+          style={{
+            width: "100%",
+            borderTopWidth: 1,
+            borderTopColor: COLOR.jade,
+          }}
         />
-
-        {/* User cards */}
-        <View style={styles.mainContainer}>
-          <FlatList
-            data={myCustomer.customers}
-            keyExtractor={(item) => item._id}
-            renderItem={renderItem1}
-            contentContainerStyle={{
-              flexGrow: 1,
-              backgroundColor: COLOR.blackhaze,
-              borderBottomColor: COLOR.jade,
-              borderBottomWidth: 1,
-              padding: 2,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          />
-        </View>
       </View>
-    );
-  }
+    </View>
+  );
 }
+// }
 
 // my styles
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 2,
     gap: 10,
-    backgroundColor: "#bbb",
   },
   topCard: {
     marginVertical: 5,
@@ -134,7 +150,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#bbb",
   },
   container: {
     marginLeft: 10,
@@ -159,8 +174,9 @@ const styles = StyleSheet.create({
     color: "#637381",
   },
   time: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#00a76f",
+    alignSelf: "center",
   },
 });

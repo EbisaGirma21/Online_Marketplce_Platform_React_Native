@@ -62,12 +62,22 @@ const userSchema = new Schema({
       },
     },
   ],
+  image: {
+    public_id: {
+      type: String,
+      default: null,
+    },
+    url: {
+      type: String,
+      default: null,
+    },
+  },
 });
 
 // Method to add a customer to the 'customers' array if not already present
 userSchema.methods.addCustomer = function (customerId) {
   const existingCustomer = this.customers.find(
-    (customer) => customer.customer.toString() === customerId.toString()
+    (customer) => customer.customer === customerId
   );
 
   if (!existingCustomer) {
@@ -91,13 +101,12 @@ userSchema.methods.changeChatStatus = function (customerId, newStatus) {
 
   if (customerIndex !== -1) {
     const currentStatus = this.customers[customerIndex].chatStatus;
-    if (currentStatus !== newStatus) {
-      this.customers[customerIndex].chatStatus = newStatus;
-      this.customers[customerIndex].lastStatusChange = new Date();
-    }
+
+    this.customers[customerIndex].chatStatus = newStatus;
+    this.customers[customerIndex].lastStatusChange = new Date();
+
     return this.save();
   } else {
-    // Customer not found, do nothing
     return Promise.resolve(this);
   }
 };

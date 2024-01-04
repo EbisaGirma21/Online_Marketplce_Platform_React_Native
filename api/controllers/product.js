@@ -65,20 +65,18 @@ const createProduct = async (req, res) => {
   try {
     const uploadedImages = [];
 
-    // for (const image of images) {
-    //   const result = await cloudinary.uploader.upload(image, {
-    //     folder: "psms",
-    //   });
-    //   uploadedImages.push({
-    //     public_id: result.public_id,
-    //     url: result.secure_url,
-    //   });
-    // }
+    const result = await cloudinary.uploader.upload(req.files.image[0].path, {
+      folder: "psms",
+    });
 
     const product = await Product.create({
       productName,
       brandName,
       modelName,
+      image: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
       specification,
       amount,
       price,

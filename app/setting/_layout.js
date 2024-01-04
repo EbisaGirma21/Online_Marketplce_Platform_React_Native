@@ -5,11 +5,10 @@ function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false, 
-        
+        headerShown: false,
       }}
     >
-      <Stack.Screen name="setting" options={{ headerTitle: "Setting" }} />
+      <Stack.Screen name="_setting" options={{ headerTitle: "Setting" }} />
       <Stack.Screen
         name="personal_info"
         options={{ headerShown: true, headerTitle: "Personal Info" }}

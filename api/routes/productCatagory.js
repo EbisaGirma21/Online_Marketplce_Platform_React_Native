@@ -9,7 +9,6 @@ const {
   updateProductCatagory,
 } = require("../controllers/productCatagory");
 const upload = require("../middleware/multer");
-const { createListing } = require("../controllers/catagory");
 
 const router = express.Router();
 

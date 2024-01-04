@@ -8,11 +8,12 @@ const {
   deleteProduct,
   updateProduct,
 } = require("../controllers/product");
+const upload = require("../middleware/multer");
 
 const router = express.Router();
 
 // signup route
-router.post("/", createProduct);
+router.post("/", upload.uploadListingImages, createProduct);
 
 router.get("/", getProducts);
 

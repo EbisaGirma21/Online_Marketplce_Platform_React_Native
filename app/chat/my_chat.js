@@ -18,9 +18,11 @@ import EmojiSelector from "react-native-emoji-selector";
 import MessageContext from "../../context/MessageContext";
 import { useAuth } from "../../context/AuthContext";
 import { COLOR } from "../../constants/color";
+import { useRoute } from "@react-navigation/native";
 
 const ChatMessages = () => {
-  const { id: recepientId } = useSearchParams();
+  const routes = useRoute();
+  const { id: recepientId } = routes.params;
   const { id, getMyCustomer, myCustomer } = useAuth();
   const { messages, fetchMessages, sendMessage } = useContext(MessageContext);
 
@@ -201,7 +203,11 @@ const ChatMessages = () => {
             <View style={styles.myHeader}>
               <Image
                 style={styles.mypp}
-                source={require("../../assets/myphoto.png")}
+                source={
+                  filterCustomerById[0].image.url
+                    ? { uri: filterCustomerById[0].image.url }
+                    : require("../../assets/myphoto.png")
+                }
               />
               <Text style={styles.topname}>
                 {filterCustomerById[0].firstName}

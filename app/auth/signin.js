@@ -38,6 +38,7 @@ export default function Signin() {
           <View style={styles.container}>
             <Text style={styles.titleText}>Welcome back to Your market!</Text>
             <TextInput
+              autoComplete="email"
               style={styles.textInput}
               placeholder="Email address"
               onChangeText={(text) => setEmail(text)}

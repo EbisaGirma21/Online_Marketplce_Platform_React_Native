@@ -49,7 +49,7 @@ export default function Home() {
       style={styles.gridItem}
       onPress={() => handleProductPress(item._id)}
     >
-      <ProductCard catagory={item.brandName} />
+      <ProductCard catagory={item.brandName} imageUrl={item.image.url} />
     </Pressable>
   );
   const renderItem1 = ({ item }) => (
@@ -60,6 +60,7 @@ export default function Home() {
   const renderItem2 = ({ item }) => (
     <Card
       productTitle={` ${item.brandName} ${item.modelName} ${item.productName}`}
+      imageUrl={item.image.url}
     />
   );
 
