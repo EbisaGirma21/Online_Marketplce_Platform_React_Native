@@ -21,7 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function Sell() {
-  const { authState, role, onSellerRegistration, id } = useAuth();
+  const { authState, role, onSellerRegistration, id, setRole } = useAuth();
   const { productCatagories, fetchProductCatagories } = useContext(
     ProductCatagorysContext
   );
@@ -79,6 +79,7 @@ export default function Sell() {
     if (result && result.error) {
       alert(result.msg);
     } else {
+      setRole("seller");
       showToast("Your Information Successfully");
     }
   };

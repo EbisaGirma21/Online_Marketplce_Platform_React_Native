@@ -15,7 +15,6 @@ const userSchema = new Schema({
   address: {
     type: String,
     required: true,
-    unique: true,
   },
 
   phoneNumber: {
@@ -62,6 +61,14 @@ const userSchema = new Schema({
       },
     },
   ],
+  wishlist: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    },
+  ],
   image: {
     public_id: {
       type: String,
@@ -71,6 +78,13 @@ const userSchema = new Schema({
       type: String,
       default: null,
     },
+  },
+  notificationToken: {
+    type: String,
+  },
+  confirmation: {
+    type: String,
+    default: null,
   },
 });
 
@@ -100,8 +114,6 @@ userSchema.methods.changeChatStatus = function (customerId, newStatus) {
   );
 
   if (customerIndex !== -1) {
-    const currentStatus = this.customers[customerIndex].chatStatus;
-
     this.customers[customerIndex].chatStatus = newStatus;
     this.customers[customerIndex].lastStatusChange = new Date();
 

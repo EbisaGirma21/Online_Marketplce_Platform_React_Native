@@ -41,7 +41,14 @@ const User = () => {
   // Transform user data into table data
   const tableData = user.map((userData, index) => [
     <View style={styles.topCard}>
-      <Image style={styles.mypp} source={require("../../assets/myphoto.png")} />
+      <Image
+        style={styles.mypp}
+        source={
+          userData.image
+            ? { uri: userData.image.url }
+            : require("../../assets/myphoto.png")
+        }
+      />
     </View>, // User index
     userData.firstName,
     userData.lastName,

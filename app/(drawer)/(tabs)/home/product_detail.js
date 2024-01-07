@@ -20,7 +20,7 @@ import MessageContext from "../../../../context/MessageContext";
 
 const ProductDetail = () => {
   // my context api
-  const { products, fetchProducts } = useContext(ProductContext);
+  const { products, fetchProducts, myWishList } = useContext(ProductContext);
   const { getCustomer, customer, id, authState } = useAuth();
   const { sendMessage } = useContext(MessageContext);
 
@@ -100,6 +100,18 @@ const ProductDetail = () => {
       } else {
         setMessage("");
         navigation.navigate("message");
+      }
+    }
+  };
+
+  const handleWishListPress = async () => {
+    if (!authState.authenticated) {
+      navigation.navigate("auth");
+    } else {
+      const result = await myWishList(productId);
+      if (result && result.error) {
+      } else {
+        alert("Successfully added");
       }
     }
   };
@@ -190,7 +202,10 @@ const ProductDetail = () => {
                   Last price
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cButton}>
+              <TouchableOpacity
+                style={styles.cButton}
+                onPress={handleWishListPress}
+              >
                 <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
                   Add to Wishlist
                 </Text>
@@ -281,6 +296,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center",
   },
 
   cButton: {
@@ -290,6 +306,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLOR.jade,
     borderRadius: 10,
+    justifyContent: "center",
   },
   callButton: {
     padding: 12,

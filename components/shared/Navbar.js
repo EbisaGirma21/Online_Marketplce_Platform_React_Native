@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -29,17 +29,19 @@ export default function Navbar() {
             <Text style={styles.buttonText}>Sign in</Text>
           </Link>
         ) : null}
-        <View>
-          <Ionicons style={styles.notsicons} name="notifications" size={24} />
-          <View style={styles.badge}>
-            <Text style={{ color: "#fff" }}>12</Text>
+        <Link href="/notification">
+          <View>
+            <Ionicons style={styles.notsicons} name="notifications" size={24} />
+            <View style={styles.badge}>
+              <Text style={{ color: "#fff" }}>12</Text>
+            </View>
           </View>
-        </View>
+        </Link>
         <Ionicons style={styles.icons} name="cart-outline" size={24} />
         {authState.authenticated ? (
-          <Pressable onPress={onLogout}>
+          <TouchableOpacity onPress={onLogout}>
             <Text style={styles.buttonText}>Sign out</Text>
-          </Pressable>
+          </TouchableOpacity>
         ) : null}
       </View>
     </View>

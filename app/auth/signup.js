@@ -20,22 +20,33 @@ export default function Signup() {
   const navigation = useNavigation();
 
   const handleSignupPress = async () => {
-    if (password === consfirmPassword) {
-      const result = await onRegister(
-        firstName,
-        lastName,
-        address,
-        phoneNumber,
-        email,
-        password
-      );
-      if (result && result.error) {
-        alert(result.message);
-      } else {
-        navigation.navigate("signin");
-      }
+    if (
+      !firstName ||
+      !lastName ||
+      !address ||
+      !phoneNumber ||
+      !email ||
+      !password
+    ) {
+      alert("Please fill all feilds");
     } else {
-      alert("Password dont match");
+      if (password === consfirmPassword) {
+        const result = await onRegister(
+          firstName,
+          lastName,
+          address,
+          phoneNumber,
+          email,
+          password
+        );
+        if (result && result.error) {
+          alert(result.message);
+        } else {
+          navigation.navigate("signin");
+        }
+      } else {
+        alert("Password dont match");
+      }
     }
   };
 

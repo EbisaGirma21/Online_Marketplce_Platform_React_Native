@@ -7,6 +7,7 @@ const ProductContext = createContext();
 
 const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
 
   const fetchProducts = async () => {
     const response = await axios.get(`${API_URL}/product`);
@@ -30,10 +31,32 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  const myWishList = async (productId) => {
+    const id = await SecureStorage.getItemAsync("user");
+    console.log(id, productId);
+    try {
+      const response = await axios.put(`${API_URL}/product/wishlist/${id}`, {
+        productId,
+      });
+      return response;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
+  const fetchMyWishList = async () => {
+    const id = await SecureStorage.getItemAsync("user");
+    const response = await axios.get(`${API_URL}/product/mywishlist/${id}`);
+    setWishlist(response.data);
+  };
+
   const valueToShare = {
     products,
+    wishlist,
     createProduct,
     fetchProducts,
+    myWishList,
+    fetchMyWishList,
   };
 
   return (

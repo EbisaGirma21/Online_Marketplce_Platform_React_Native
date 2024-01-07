@@ -3,6 +3,8 @@ import Navbar from "../../components/shared/Navbar";
 import { Drawer } from "expo-router/drawer";
 import { useAuth } from "../../context/AuthContext";
 
+
+
 export default function Layout() {
   const { authState } = useAuth();
 

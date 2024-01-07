@@ -17,12 +17,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState([]);
   const [customer, setCustomer] = useState([]);
   const [myCustomer, setMyCustomer] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [authState, setAuthState] = useState({
     token: null,
     authenticated: false,
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState(SecureStorage.getItemAsync(CURRENT_USER));
   const [role, setRole] = useState("seller");
   const navigation = useNavigation();
@@ -53,18 +53,24 @@ export const AuthProvider = ({ children }) => {
     address,
     phoneNumber,
     email,
-    password
+    password,
+    notificationToken
   ) => {
+    setIsLoading(true);
     try {
-      return await axios.post(`${API_URL}/user/registration`, {
+      const result = await axios.post(`${API_URL}/user/registration`, {
         firstName,
         lastName,
         address,
         phoneNumber,
         email,
         password,
+        notificationToken,
       });
+      setIsLoading(false);
+      return result;
     } catch (e) {
+      setIsLoading(false);
       return { error: true, message: e.response.data.message };
     }
   };
@@ -90,11 +96,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, myToken) => {
+    setIsLoading(true);
     try {
       const result = await axios.post(`${API_URL}/user/login`, {
         email,
         password,
+        myToken,
       });
 
       setAuthState({ token: result.data.token, authenticated: true });
@@ -110,9 +118,10 @@ export const AuthProvider = ({ children }) => {
 
       setId(result.data._id);
       setRole(result.data.role);
-
+      setIsLoading(false);
       return result;
     } catch (e) {
+      setIsLoading(false);
       return { error: true, message: e.response.data.message };
     }
   };
@@ -214,6 +223,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const confirmEmail = async (email) => {
+    try {
+      const result = await axios.post(`${API_URL}/user/confirmation/`, {
+        email,
+      });
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+  const confirmCode = async (email, code) => {
+    try {
+      const result = await axios.post(`${API_URL}/user/confirmation/check`, {
+        email,
+        code,
+      });
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
+  const resetPassword = async (email, newPassword) => {
+    try {
+      const result = await axios.post(`${API_URL}/user/reset`, {
+        email,
+        newPassword,
+      });
+      return result;
+    } catch (e) {
+      return { error: true, message: e.response.data.message };
+    }
+  };
+
   const logout = async () => {
     await SecureStorage.deleteItemAsync(TOKEN_KEY);
     await SecureStorage.deleteItemAsync(CURRENT_USER);
@@ -226,6 +269,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = {
+    myCustomer,
+    customer,
+    user,
+    id,
+    role,
+    authState,
+    isLoading,
     onRegister: register,
     onLogin: login,
     onLogout: logout,
@@ -238,13 +288,10 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     updateInformation,
     updateEmail,
-    myCustomer,
-    customer,
-    user,
-    id,
-    role,
-    authState,
-    isLoading,
+    setRole,
+    confirmEmail,
+    confirmCode,
+    resetPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

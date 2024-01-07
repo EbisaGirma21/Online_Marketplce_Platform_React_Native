@@ -7,6 +7,8 @@ const {
   createProduct,
   deleteProduct,
   updateProduct,
+  wishlist,
+  getMyWishList,
 } = require("../controllers/product");
 const upload = require("../middleware/multer");
 
@@ -22,5 +24,7 @@ router.get("/:id", getProduct);
 router.delete("/:id", deleteProduct);
 
 router.patch("/:id", updateProduct);
+router.put("/wishlist/:id", wishlist);
+router.get("/mywishlist/:id", getMyWishList);
 
 module.exports = router;

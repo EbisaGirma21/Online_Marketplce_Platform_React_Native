@@ -36,6 +36,5 @@ mongoose
 
 app.use("/api/user", user);
 app.use("/api/productCatagory", productCatagory);
-
 app.use("/api/product", product);
 app.use("/api/message", message);

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Message = require("../models/message");
 const User = require("../models/user");
+const sendPushNotification = require("./notifications");
 
 //endpoint to post Messages and store it in the backend
 // endpoint to post Messages and store it in the backend
@@ -21,7 +22,6 @@ const sendMessage = async (req, res) => {
     if (!recipientExists) {
       await senderUser.addCustomer(recepientId);
     }
-    console.log(recipientExists);
     // Find the sender user by ID
     const recepientUser = await User.findById(recepientId);
     if (!recepientUser) {
@@ -35,7 +35,6 @@ const sendMessage = async (req, res) => {
     if (!senderExists) {
       await recepientUser.addCustomer(senderId);
     }
-    console.log(senderExists);
 
     const newMessage = new Message({
       senderId,
@@ -51,6 +50,12 @@ const sendMessage = async (req, res) => {
     // Update the chat status of the sender and recipient
     await senderUser.changeChatStatus(recepientId, "unseen");
     await recepientUser.changeChatStatus(senderId, "unseen");
+
+    sendPushNotification(
+      recepientUser.notificationToken,
+      message,
+      "Mymarket Message"
+    );
 
     // Respond with success
     res.status(200).json({ message: "Message sent successfully" });

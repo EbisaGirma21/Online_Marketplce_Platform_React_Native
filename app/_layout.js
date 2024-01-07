@@ -17,19 +17,29 @@ const App = () => {
           </MessageProvider>
         </ProductProvider>
       </ProductCatagoryProvider>
-    </AuthProvider> 
+    </AuthProvider>
   );
 };
 
-
 function Layout() {
-  
   return (
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="auth" options={{ headerShown: false }} />
       <Stack.Screen
         name="setting"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="forgot_password"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="notification"
         options={{
           headerShown: false,
         }}
