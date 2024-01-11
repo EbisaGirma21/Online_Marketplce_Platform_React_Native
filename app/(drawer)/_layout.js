@@ -3,15 +3,17 @@ import Navbar from "../../components/shared/Navbar";
 import { Drawer } from "expo-router/drawer";
 import { useAuth } from "../../context/AuthContext";
 
-
-
 export default function Layout() {
-  const { authState } = useAuth();
+  const { authState, role } = useAuth();
 
   return (
     <Drawer
       screenOptions={{
-        swipeEnabled: authState.authenticated,
+        swipeEnabled: authState.authenticated
+          ? role === "admin"
+            ? true
+            : false
+          : false,
         // header: () => <Navbar />,
       }}
     >

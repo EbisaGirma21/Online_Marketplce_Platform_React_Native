@@ -1,12 +1,14 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import * as SecureStorage from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
+import { io } from "socket.io-client";
 
 const TOKEN_KEY = "my-jwt";
 const CURRENT_USER = "user";
 const USER_ROLE = "role";
 export const API_URL = "http://10.194.65.14:8000/api";
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -18,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [customer, setCustomer] = useState([]);
   const [myCustomer, setMyCustomer] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const socket = useRef();
 
   const [authState, setAuthState] = useState({
     token: null,
@@ -26,6 +29,10 @@ export const AuthProvider = ({ children }) => {
   const [id, setId] = useState(SecureStorage.getItemAsync(CURRENT_USER));
   const [role, setRole] = useState("seller");
   const navigation = useNavigation();
+
+  useEffect(() => {
+    socket.current = io("http://10.194.65.14:8900");
+  }, []);
 
   useEffect(() => {
     const loadToken = async () => {
@@ -276,6 +283,7 @@ export const AuthProvider = ({ children }) => {
     role,
     authState,
     isLoading,
+    socket,
     onRegister: register,
     onLogin: login,
     onLogout: logout,

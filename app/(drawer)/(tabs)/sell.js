@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  FlatList,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { useContext, useEffect, useState } from "react";
@@ -244,12 +245,13 @@ export default function Sell() {
             ))}
           </Picker>
           <View style={styles.productName}>
-            <TextInput
+            <Text style={styles.label}>Product Name</Text>
+            <TextField
               placeholder="Product Name"
               value={productName}
               onChangeText={(text) => setProductName(text)}
               // onChangeText={handleInputChange}
-              style={styles.productInput}
+              // style={styles.productInput}
             />
             {/* <FlatList
               data={suggestedTags}
@@ -260,42 +262,49 @@ export default function Sell() {
               style={styles.myList}
             /> */}
           </View>
-
+          <Text style={styles.label}>Brand Name</Text>
           <TextField
             placeholder="Brand Name"
             value={brandName}
             onChangeText={setBrandName}
           />
+          <Text style={styles.label}>Model Name</Text>
           <TextField
             placeholder="Model Name"
             value={modelName}
             onChangeText={setModelName}
           />
+          <Text style={styles.label}>Specification</Text>
           <TextField
             placeholder="Some Detail Specification"
             value={specification}
             onChangeText={setSpecification}
           />
+          <Text style={styles.label}>Amount</Text>
           <TextField
             placeholder="Amount"
             value={amount}
             onChangeText={setAmount}
           />
+          <Text style={styles.label}>Price</Text>
           <TextField
             placeholder="Price"
             value={price}
             onChangeText={setPrice}
           />
+          <Text style={styles.label}>Condition</Text>
           <TextField
             placeholder="Condition"
             value={condition}
             onChangeText={setCondition}
           />
+          <Text style={styles.label}>Short Description</Text>
           <TextField
             placeholder="Short Description"
             value={shortDescription}
             onChangeText={setShortDescription}
           />
+          <Text style={styles.label}>Location of Product</Text>
           <TextField
             placeholder="Location where product exists"
             value={location}
@@ -394,5 +403,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
+  },
+  label: {
+    marginLeft: "5%",
+    color: COLOR.palesky,
+    paddingTop: 5,
+
+    fontSize: 18,
   },
 });

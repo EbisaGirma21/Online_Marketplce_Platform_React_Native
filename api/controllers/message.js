@@ -48,7 +48,7 @@ const sendMessage = async (req, res) => {
     await newMessage.save();
 
     // Update the chat status of the sender and recipient
-    await senderUser.changeChatStatus(recepientId, "unseen");
+    await senderUser.changeTimeStatus(recepientId, "unseen");
     await recepientUser.changeChatStatus(senderId, "unseen");
 
     sendPushNotification(
@@ -75,7 +75,9 @@ const getMessage = async (req, res) => {
         { senderId: senderId, recepientId: recepientId },
         { senderId: recepientId, recepientId: senderId },
       ],
-    }).populate("senderId", "_id name");
+    })
+      .populate("senderId", "_id name")
+      .sort({ timeStamp: -1 }); // Sort by timestamp in descending order
 
     res.json(messages);
   } catch (error) {
@@ -86,18 +88,15 @@ const getMessage = async (req, res) => {
 
 // Route to update chat status
 const updateStatus = async (req, res) => {
-  const { userId, customerId } = req.params;
-
+  const { senderId, recepientId } = req.params;
   try {
     // Find the user by ID
-    const user = await User.findById(userId);
+    const user = await User.findById(senderId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     // Update chat status
-    await user.changeChatStatus(customerId, "seen");
-    console.log("Chat status updated successfully");
+    await user.changeChatStatus(recepientId, "seen");
     res.status(200).json({ message: "Chat status updated successfully" });
   } catch (error) {
     console.error(error);

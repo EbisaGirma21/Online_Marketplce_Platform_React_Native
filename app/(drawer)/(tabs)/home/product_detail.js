@@ -116,6 +116,8 @@ const ProductDetail = () => {
     }
   };
 
+  console.log(filteredProduct[0].productOwner);
+
   return (
     <ScrollView>
       <View>

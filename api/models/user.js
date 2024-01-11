@@ -59,6 +59,10 @@ const userSchema = new Schema({
         type: Date,
         default: null,
       },
+      unSeenMessage: {
+        type: Number,
+        default: 0,
+      },
     },
   ],
   wishlist: [
@@ -114,8 +118,31 @@ userSchema.methods.changeChatStatus = function (customerId, newStatus) {
   );
 
   if (customerIndex !== -1) {
+    if (newStatus === "unseen") {
+      this.customers[customerIndex].unSeenMessage =
+        this.customers[customerIndex].unSeenMessage + 1;
+    } else if (newStatus === "seen") {
+      this.customers[customerIndex].unSeenMessage = 0;
+    }
     this.customers[customerIndex].chatStatus = newStatus;
-    this.customers[customerIndex].lastStatusChange = new Date();
+    if (newStatus === "unseen") {
+      this.customers[customerIndex].lastStatusChange = new Date();
+    }
+
+    return this.save();
+  } else {
+    return Promise.resolve(this);
+  }
+};
+userSchema.methods.changeTimeStatus = function (customerId, newStatus) {
+  const customerIndex = this.customers.findIndex(
+    (customer) => customer.customer.toString() === customerId.toString()
+  );
+  if (customerIndex !== -1) {
+    this.customers[customerIndex].chatStatus = newStatus;
+    if (newStatus === "unseen") {
+      this.customers[customerIndex].lastStatusChange = new Date();
+    }
 
     return this.save();
   } else {

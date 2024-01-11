@@ -163,13 +163,13 @@ const getCustomers = async (req, res) => {
             { senderId: user._id, recepientId: customer._id },
           ],
         })
-          .sort({ timestamp: -1 })
+          .sort({ timeStamp: -1 })
           .limit(1);
-
         return {
           ...customer.toObject(),
           chatStatus: customerStatus.chatStatus,
           lastStatusChange: customerStatus.lastStatusChange,
+          unSeenMessage: customerStatus.unSeenMessage,
           recentMessage: recentMessage ? recentMessage.toObject() : null,
         };
       })
@@ -296,7 +296,6 @@ const confirmCode = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  console.log("this");
   const { email, newPassword } = req.body;
   console.log(email, newPassword);
 

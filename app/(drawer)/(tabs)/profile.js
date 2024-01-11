@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -25,7 +25,9 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  return (
+  return user === null ? (
+    <ActivityIndicator style={styles.spinner} size="large" color={COLOR.jade} />
+  ) : (
     <View style={styles.container}>
       <View style={styles.topContainer}>
         <View style={styles.halfCircle} />

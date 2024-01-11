@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { COLOR } from "../../../constants/color";
 import ProductCard from "../../../components/home/ProductCard";
@@ -40,13 +40,21 @@ const WishList = () => {
         <Text style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}>
           My Products
         </Text>
-        <FlatList
-          data={wishlist}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          numColumns={2}
-          contentContainerStyle={styles.gridRow}
-        />
+        {wishlist.length === 0 ? (
+          <ActivityIndicator
+            style={styles.spinner}
+            size="large"
+            color={COLOR.jade}
+          />
+        ) : (
+          <FlatList
+            data={wishlist}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            numColumns={2}
+            contentContainerStyle={styles.gridRow}
+          />
+        )}
       </View>
     </>
   );

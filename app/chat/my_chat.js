@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -19,37 +19,35 @@ import MessageContext from "../../context/MessageContext";
 import { useAuth } from "../../context/AuthContext";
 import { COLOR } from "../../constants/color";
 import { useRoute } from "@react-navigation/native";
+import { io } from "socket.io-client";
 
 const ChatMessages = () => {
   const routes = useRoute();
   const { id: recepientId } = routes.params;
   const { id, getMyCustomer, myCustomer } = useAuth();
   const { messages, fetchMessages, sendMessage } = useContext(MessageContext);
-
+  const socket = useRef();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const [message, setMessage] = useState("");
 
-  const myInputCardStyle = StyleSheet.flatten([
-    styles.myInputCard,
-    {
-      marginBottom: showEmojiSelector ? 0 : 10,
-    },
-  ]);
+  useEffect(() => {
+    socket.current = io("http://10.194.65.14:8900");
+  }, []);
+
+  // get message use effect
+  useEffect(() => {
+    socket.current.on("receive_message", () => {
+      fetchMessages(recepientId);
+    });
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchMessages(recepientId);
-    };
-    recepientId && fetchData();
-    // Start polling for new messages
-    const intervalId = setInterval(() => {
-      recepientId && fetchData();
-    }, 5000);
-    // Clear the interval when the component is unmounted
-    return () => clearInterval(intervalId);
-  }, [recepientId]);
+    socket.current.on("chat_room", () => {
+      fetchMessages(recepientId);
+    });
+  }, []);
 
-  // get Costomer effect
+  // get customer use effect
   useEffect(() => {
     getMyCustomer();
   }, []);
@@ -57,14 +55,20 @@ const ChatMessages = () => {
   const handleEmojiPress = () => {
     setShowEmojiSelector(!showEmojiSelector);
   };
-
   const handleSendPress = async () => {
     const messageType = "text";
+    socket.current.emit("send_message");
+    //   id,
+    //   recepientId,
+    //   messageType,
+    //   message,
+    // });
     const result = await sendMessage(recepientId, messageType, message);
     if (result && result.error) {
       alert(result.message);
       console.log("Error Sent");
     } else {
+      fetchMessages(recepientId);
       setMessage("");
     }
   };
@@ -144,7 +148,7 @@ const ChatMessages = () => {
     }
     return (
       <>
-        {!isEqual && (
+        {/* {!isEqual && (
           <Text
             style={{
               alignSelf: "center",
@@ -157,7 +161,7 @@ const ChatMessages = () => {
           >
             {formatDatetamp(item.timeStamp, form)}
           </Text>
-        )}
+        )} */}
         <Pressable
           style={
             item.senderId._id === id
@@ -195,6 +199,14 @@ const ChatMessages = () => {
       </>
     );
   };
+
+  const myInputCardStyle = StyleSheet.flatten([
+    styles.myInputCard,
+    {
+      marginBottom: showEmojiSelector ? 0 : 10,
+    },
+  ]);
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <Stack.Screen
@@ -220,11 +232,12 @@ const ChatMessages = () => {
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        ref={(ref) => {
-          this.flastList = ref;
-        }}
-        onContentSizeChange={() => this.flastList.scrollToEnd()}
+        // ref={(ref) => {
+        //   this.flastList = ref;
+        // }}
+        // onContentSizeChange={() => this.flastList.scrollToEnd()}
         showsVerticalScrollIndicator={false}
+        inverted
       />
 
       <View style={myInputCardStyle}>

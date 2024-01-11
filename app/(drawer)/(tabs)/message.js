@@ -5,20 +5,33 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { useAuth } from "../../../context/AuthContext";
+import { socket, useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { Link } from "expo-router";
 import { COLOR } from "../../../constants/color";
 import MessageContext from "../../../context/MessageContext";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, formatRelative } from "date-fns";
+import { io } from "socket.io-client";
 
 export default function Message() {
   const { authState, getMyCustomer, myCustomer, id } = useAuth();
   const { updateStatus } = useContext(MessageContext);
   const navigation = useNavigation();
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io("http://10.194.65.14:8900");
+  }, []);
+
+  // get message use effect
+  useEffect(() => {
+    socket.current.emit("addUser", id);
+    socket.current.on("getUsers", (users) => {});
+  }, [id]);
 
   // authState.authenticated effect
   useEffect(() => {
@@ -33,15 +46,88 @@ export default function Message() {
 
   // authState.authenticated effect
   useEffect(() => {
-    getMyCustomer();
-  }, [id]);
+    socket.current.on("receive_message", () => {
+      getMyCustomer();
+    });
+  }, []);
 
-  const handleUserPress = async (id) => {
-    navigation.navigate(`chat/my_chat`, { id: id });
-    console.log(id);
-
-    await updateStatus(id);
+  const handleUserPress = async (recipient, lastSender, chatStatus) => {
+    socket.current.emit("send_message");
+    if (lastSender === id) {
+      navigation.navigate(`chat/my_chat`, { id: recipient });
+    } else if (chatStatus !== "seen") {
+      const result = await updateStatus(recipient);
+      if (result && result.error) {
+        alert("An error occured");
+      } else {
+        navigation.navigate(`chat/my_chat`, { id: recipient });
+      }
+    } else {
+      navigation.navigate(`chat/my_chat`, { id: recipient });
+    }
   };
+
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const currentDate = new Date();
+
+    const isToday =
+      date.toISOString().split("T")[0] ===
+      currentDate.toISOString().split("T")[0];
+    const isThisWeek =
+      date >=
+      new Date(currentDate - (currentDate.getDay() - 1) * 24 * 60 * 60 * 1000);
+
+    if (isToday) {
+      // If it's today, return the time
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    } else if (isThisWeek) {
+      // If it's this week, return the day of the week
+      const daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      return daysOfWeek[date.getDay()];
+    } else if (
+      date.getMonth() === currentDate.getMonth() &&
+      date.getFullYear() === currentDate.getFullYear()
+    ) {
+      // If it's this month, return the month and day
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return `${monthNames[date.getMonth()]} ${date.getDate()}`;
+    } else if (date >= new Date(currentDate - 365 * 24 * 60 * 60 * 1000)) {
+      // If it's within the last year, return the month, day, and year
+      return `${date.getDate()}.${date.getMonth() + 1}.${String(
+        date.getFullYear()
+      ).slice(-2)}`;
+    } else {
+      // If it's more than a year ago, return the full date
+      return `${String(date.getDate()).padStart(2, "0")}.${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}.${String(date.getFullYear()).slice(-2)}`;
+    }
+  }
+
   const renderItem = ({ item }) => (
     <View style={styles.topCard}>
       <Image
@@ -58,7 +144,9 @@ export default function Message() {
 
   const renderItem1 = ({ item }) => (
     <Pressable
-      onPress={() => handleUserPress(item._id)}
+      onPress={() =>
+        handleUserPress(item._id, item.recentMessage.senderId, item.chatStatus)
+      }
       style={{
         width: "100%",
         display: "flex",
@@ -85,17 +173,32 @@ export default function Message() {
           <Text
             style={{
               color: `${item.chatStatus !== "unseen" ? "#637381" : "#000"}`,
-              fontWeight: "bold",
+              fontWeight: `${
+                item.chatStatus !== "unseen" &&
+                item.recentMessage.senderId !== id
+                  ? "400"
+                  : "300"
+              }`,
             }}
           >
             {item.recentMessage.message}
           </Text>
         </View>
       </View>
-      <Text style={styles.time}>
-        {formatDistanceToNow(item.lastStatusChange, { addSuffix: true }) ||
-          "Long time ago"}
-      </Text>
+      <View
+        style={{
+          gap: 3,
+          marginRight: 10,
+          alignSelf: "center",
+        }}
+      >
+        <Text style={styles.time}>
+          {formatTimestamp(item.lastStatusChange) || "Long time ago"}
+        </Text>
+        {item.unSeenMessage !== 0 && (
+          <Text style={styles.unseen}>{item.unSeenMessage || ""}</Text>
+        )}
+      </View>
     </Pressable>
   );
   if (myCustomer.customers && myCustomer.customers.length === 0) {
@@ -105,7 +208,10 @@ export default function Message() {
       </View>
     );
   }
-  return (
+
+  return myCustomer.length === 0 ? (
+    <ActivityIndicator style={styles.spinner} size="large" color={COLOR.jade} />
+  ) : (
     <View>
       <FlatList
         data={myCustomer.customers}
@@ -131,7 +237,6 @@ export default function Message() {
     </View>
   );
 }
-// }
 
 // my styles
 const styles = StyleSheet.create({
@@ -176,7 +281,14 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#00a76f",
-    alignSelf: "center",
+    color: COLOR.palesky,
+  },
+  unseen: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+    backgroundColor: COLOR.jade,
+    borderRadius: 100,
   },
 });

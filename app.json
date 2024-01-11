@@ -6,7 +6,13 @@
     },
     "plugins": ["expo-router"],
     "name": "my_market",
+    "icon": "./assets/splash.png",
     "slug": "mymarket",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fff"
+    },
     "extra": {
       "router": {
         "origin": false

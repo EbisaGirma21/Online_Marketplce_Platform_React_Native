@@ -6,6 +6,7 @@ import {
   Pressable,
   FlatList,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
@@ -81,33 +82,42 @@ export default function Home() {
             <Ionicons name="search" size={24} color={COLOR.jade} />
           </Pressable>
         </View>
-
-        <FlatList
-          data={productCatagories}
-          renderItem={renderItem1}
-          keyExtractor={(item) => item._id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.hscroll}
-        />
-
-        <FlatList
-          data={products}
-          renderItem={renderItem2}
-          keyExtractor={(item) => item._id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.imageScroll}
-        />
-        <View style={styles.mainProductContainer}>
-          <FlatList
-            data={products}
-            renderItem={renderItem}
-            keyExtractor={(item) => item._id}
-            numColumns={2}
-            contentContainerStyle={styles.gridRow}
+        {productCatagories.length === 0 ? (
+          <ActivityIndicator
+            style={styles.spinner}
+            size="large"
+            color={COLOR.jade}
           />
-        </View>
+        ) : (
+          <>
+            <FlatList
+              data={productCatagories}
+              renderItem={renderItem1}
+              keyExtractor={(item) => item._id}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={styles.hscroll}
+            />
+
+            <FlatList
+              data={products}
+              renderItem={renderItem2}
+              keyExtractor={(item) => item._id}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={styles.imageScroll}
+            />
+            <View style={styles.mainProductContainer}>
+              <FlatList
+                data={products}
+                renderItem={renderItem}
+                keyExtractor={(item) => item._id}
+                numColumns={2}
+                contentContainerStyle={styles.gridRow}
+              />
+            </View>
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -174,9 +184,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     gap: 40,
   },
-  gridRow: {},
   gridItem: {
     flex: 0.5,
     height: 160,
   },
+  spinner: {},
 });
