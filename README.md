@@ -93,7 +93,7 @@ My Marketplace is a mobile application developed with React Native for the front
 
 ## Screenshots 📷
 
-<img src="screenshots/sc1.jpg" alt="Screenshot 1" height="380px" width="22%">&nbsp;&nbsp;&nbsp;
+<img src="screenshots/sc1.jpg" alt="Screenshot 1" height="380px" width="20%">&nbsp;&nbsp;&nbsp;
 <img src="screenshots/sc2.jpg" alt="Screenshot 2" height="380px" width="20%">&nbsp;&nbsp;&nbsp;
 <img src="screenshots/sc3.jpg" alt="Screenshot 3" height="380px" width="20%">&nbsp;&nbsp;&nbsp;
 <img src="screenshots/sc4.jpg" alt="Screenshot 4" height="380px" width="20%">
