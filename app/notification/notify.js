@@ -11,6 +11,7 @@ import { COLOR } from "../../constants/color";
 import { useAuth } from "../../context/AuthContext";
 import MessageContext from "../../context/MessageContext";
 import { Entypo } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function Notify() {
   const { authState, getMyCustomer, myCustomer, id } = useAuth();
@@ -126,6 +127,7 @@ export default function Notify() {
   return (
     <View>
       {/* User cards */}
+      <StatusBar style="dark" />
       <View style={styles.mainContainer}>
         <FlatList
           data={myCustomer.customers}

@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { COLOR } from "../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -79,6 +79,7 @@ export default function Signin() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.mainContainer}
     >
+      <StatusBar style="dark" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ width: "100%", height: "100%" }}>
           <View style={styles.container}>

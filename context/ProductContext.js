@@ -50,6 +50,36 @@ const ProductProvider = ({ children }) => {
     setWishlist(response.data);
   };
 
+  const payment = async (amount, phoneNumber) => {
+    const myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      "Bearer CHASECK_TEST-1x94uO95pov8QpnzHXI1bNgUl6FwLMyH"
+    );
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      amount: amount,
+      currency: "ETB",
+      phone_number: phoneNumber,
+      tx_ref: "chewatatest-6669",
+      "customization[title]": "Payment for my favourite merchant",
+      "customization[description]": "I love online payments",
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const result = await fetch(
+      "https://chapa.link/donation/view/DN-B0B8xRFp3qUf"
+      // requestOptions
+    );
+  };
+
   const valueToShare = {
     products,
     wishlist,
@@ -57,6 +87,7 @@ const ProductProvider = ({ children }) => {
     fetchProducts,
     myWishList,
     fetchMyWishList,
+    payment,
   };
 
   return (

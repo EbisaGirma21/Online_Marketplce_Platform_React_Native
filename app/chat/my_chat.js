@@ -20,6 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { COLOR } from "../../constants/color";
 import { useRoute } from "@react-navigation/native";
 import { io } from "socket.io-client";
+import { StatusBar } from "expo-status-bar";
 
 const ChatMessages = () => {
   const routes = useRoute();
@@ -31,7 +32,7 @@ const ChatMessages = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    socket.current = io("http://10.194.65.14:8900");
+    socket.current = io("http://192.168.137.55:8900");
   }, []);
 
   // get message use effect
@@ -45,6 +46,10 @@ const ChatMessages = () => {
     socket.current.on("chat_room", () => {
       fetchMessages(recepientId);
     });
+  }, []);
+
+  useEffect(() => {
+    fetchMessages(recepientId);
   }, []);
 
   // get customer use effect
@@ -209,6 +214,7 @@ const ChatMessages = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <Stack.Screen
         options={{
           headerTitle: () => (
@@ -252,6 +258,7 @@ const ChatMessages = () => {
           style={styles.myInput}
           value={message}
           onChangeText={(text) => setMessage(text)}
+          onFocus={() => setShowEmojiSelector(false)}
         />
         <Entypo name="camera" size={24} color={COLOR.jade} />
         <Ionicons name="mic" size={24} color={COLOR.jade} />

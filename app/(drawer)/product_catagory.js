@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { TextInput } from "react-native-gesture-handler";
 import ProductCatagorysContext from "../../context/ProductCatagoryContext";
 import { AntDesign } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function ProductCatagory() {
   const [isAddPage, setIsAddPage] = useState(false);
@@ -91,6 +92,8 @@ export default function ProductCatagory() {
   if (!isAddPage) {
     return (
       <View>
+        <StatusBar style="dark" />
+
         <View style={styles.topPart}>
           <TouchableOpacity
             style={styles.button}
@@ -117,6 +120,8 @@ export default function ProductCatagory() {
   } else {
     return (
       <View style={styles.addContainer}>
+        <StatusBar style="dark" />
+
         <Text style={styles.formTitle}>Add Your Product</Text>
         <View style={styles.infoContainer}>
           <View style={{ display: "flex", flexDirection: "row", width: "95%" }}>

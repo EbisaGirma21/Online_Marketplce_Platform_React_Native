@@ -16,6 +16,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useAuth } from "../../../../context/AuthContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import MessageContext from "../../../../context/MessageContext";
+import { StatusBar } from "expo-status-bar";
 // import { ScrollView } from "react-native-virtualized-view";
 
 const ProductDetail = () => {
@@ -116,10 +117,9 @@ const ProductDetail = () => {
     }
   };
 
-  console.log(filteredProduct[0].productOwner);
-
   return (
     <ScrollView>
+      <StatusBar style="dark" />
       <View>
         <Image
           source={
@@ -166,7 +166,7 @@ const ProductDetail = () => {
               </Text>
             </View>
           </View>
-          {id !== filteredProduct[0].productOwner && (
+          {id !== filteredProduct[0].productOwner._id && (
             <View style={styles.topInnerCard}>
               <TouchableOpacity
                 style={styles.reqButton}
@@ -184,8 +184,29 @@ const ProductDetail = () => {
               </TouchableOpacity>
             </View>
           )}
+          {id === filteredProduct[0].productOwner._id && (
+            <View style={styles.topInnerCard}>
+              <TouchableOpacity
+                style={styles.reqButton}
+                onPress={() => {
+                  navigation.navigate("edit_product", {
+                    product: filteredProduct[0],
+                  });
+                }}
+              >
+                <Text style={{ alignSelf: "center", color: COLOR.palesky }}>
+                  Edit Product
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.callButton} onPress={() => {}}>
+                <Text style={{ alignSelf: "center", color: "#fff" }}>
+                  Remove Product
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        {id !== filteredProduct[0].productOwner && (
+        {id !== filteredProduct[0].productOwner._id && (
           <View style={styles.contactCard}>
             <Text>Start to chat with seller</Text>
             <View style={styles.topInnerCards}>

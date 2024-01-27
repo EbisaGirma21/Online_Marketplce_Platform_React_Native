@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
 import { COLOR } from "../../constants/color";
+import { StatusBar } from "expo-status-bar";
 const PersonalInfo = () => {
   // user Information edition
 
@@ -100,6 +101,7 @@ const PersonalInfo = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+      <StatusBar style="dark" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topContainer}>

@@ -7,26 +7,31 @@ import {
   FlatList,
   TextInput,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import { ScrollView } from "react-native-gesture-handler";
 import Card from "../../../../components/home/Card";
 import ProductCard from "../../../../components/home/ProductCard";
 import TextField from "../../../../components/shared/TextField";
 import ProductCatagorysContext from "../../../../context/ProductCatagoryContext";
 import ProductContext from "../../../../context/ProductContext";
-import { ScrollView } from "react-native-virtualized-view";
+// import { ScrollView } from "react-native-virtualized-view";
 import { Ionicons } from "@expo/vector-icons";
 import { COLOR } from "../../../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 export default function Home() {
+  const navigation = useNavigation();
+
   const { productCatagories, fetchProductCatagories } = useContext(
     ProductCatagorysContext
   );
   const { products, fetchProducts } = useContext(ProductContext);
 
-  const navigation = useNavigation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState(products);
 
   // catagory use effect
   useEffect(() => {
@@ -64,9 +69,10 @@ export default function Home() {
       imageUrl={item.image.url}
     />
   );
-
   return (
     <ScrollView style={styles.mainContainer}>
+      <StatusBar style="dark" />
+
       <View>
         <View
           style={{ backgroundColor: COLOR.jade, height: 40, width: "100%" }}
@@ -77,7 +83,25 @@ export default function Home() {
           style={styles.mycard}
         />
         <View>
-          <TextInput placeholder="Search your Product" style={styles.search} />
+          <TextInput
+            placeholder="Search your Product"
+            style={styles.search}
+            onChangeText={(text) => {
+              setSearchTerm(text);
+              // Filter the data based on the input
+              const filtered = products.filter((item) => {
+                const values = Object.values(item);
+                return values.some(
+                  (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(text.toLowerCase())
+                );
+              });
+
+              setFilteredData(filtered);
+            }}
+            value={searchTerm}
+          />
           <Pressable style={styles.searchButton}>
             <Ionicons name="search" size={24} color={COLOR.jade} />
           </Pressable>
@@ -90,26 +114,29 @@ export default function Home() {
           />
         ) : (
           <>
-            <FlatList
-              data={productCatagories}
-              renderItem={renderItem1}
-              keyExtractor={(item) => item._id}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={styles.hscroll}
-            />
-
-            <FlatList
-              data={products}
-              renderItem={renderItem2}
-              keyExtractor={(item) => item._id}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={styles.imageScroll}
-            />
+            {!searchTerm && (
+              <>
+                <FlatList
+                  data={productCatagories}
+                  renderItem={renderItem1}
+                  keyExtractor={(item) => item._id}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.hscroll}
+                />
+                <FlatList
+                  data={products}
+                  renderItem={renderItem2}
+                  keyExtractor={(item) => item._id}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.imageScroll}
+                />
+              </>
+            )}
             <View style={styles.mainProductContainer}>
               <FlatList
-                data={products}
+                data={searchTerm ? filteredData : products}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
                 numColumns={2}

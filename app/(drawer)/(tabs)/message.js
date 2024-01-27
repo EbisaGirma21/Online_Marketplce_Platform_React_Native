@@ -16,6 +16,7 @@ import { COLOR } from "../../../constants/color";
 import MessageContext from "../../../context/MessageContext";
 import { formatDistanceToNow, formatRelative } from "date-fns";
 import { io } from "socket.io-client";
+import { StatusBar } from "expo-status-bar";
 
 export default function Message() {
   const { authState, getMyCustomer, myCustomer, id } = useAuth();
@@ -24,7 +25,7 @@ export default function Message() {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://10.194.65.14:8900");
+    socket.current = io("http://192.168.137.55:8900");
   }, []);
 
   // get message use effect
@@ -213,6 +214,7 @@ export default function Message() {
     <ActivityIndicator style={styles.spinner} size="large" color={COLOR.jade} />
   ) : (
     <View>
+      <StatusBar style="dark" />
       <FlatList
         data={myCustomer.customers}
         keyExtractor={(item) => item._id}

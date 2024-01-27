@@ -14,6 +14,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
+import { StatusBar } from "expo-status-bar";
 
 const Setting = () => {
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -38,6 +39,8 @@ const Setting = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
+
       <View style={styles.topCard}>
         <Text style={styles.title}>Settings</Text>
         <Text style={{ color: "#fff", fontSize: 20 }}>Account Information</Text>

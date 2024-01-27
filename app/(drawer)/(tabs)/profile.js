@@ -4,6 +4,7 @@ import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { COLOR } from "../../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 export default function Profile() {
   const { authState, onGetuser, user, id } = useAuth();
@@ -29,6 +30,7 @@ export default function Profile() {
     <ActivityIndicator style={styles.spinner} size="large" color={COLOR.jade} />
   ) : (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <View style={styles.topContainer}>
         <View style={styles.halfCircle} />
         <Text style={styles.myname}>

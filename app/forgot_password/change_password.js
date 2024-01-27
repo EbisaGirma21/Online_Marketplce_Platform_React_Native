@@ -13,6 +13,7 @@ import {
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const ChangePassword = () => {
   const routes = useRoute();
@@ -50,6 +51,8 @@ const ChangePassword = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+      <StatusBar style="dark" />
+
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topContainer}>

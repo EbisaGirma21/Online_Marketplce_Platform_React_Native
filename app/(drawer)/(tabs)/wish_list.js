@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { COLOR } from "../../../constants/color";
 import ProductCard from "../../../components/home/ProductCard";
@@ -7,7 +14,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 const WishList = () => {
   // my context api
-  const { wishlist, fetchMyWishList } = useContext(ProductContext);
+  const { wishlist, fetchMyWishList, payment } = useContext(ProductContext);
 
   // product use effect
   useEffect(() => {
@@ -34,9 +41,15 @@ const WishList = () => {
     </View>
   );
 
+  const handlePayment = () => {
+    const checkoutUrl = "https://chapa.link/donation/view/DN-B0B8xRFp3qUf";
+
+    // Open the URL using Linking
+    Linking.openURL(checkoutUrl);
+  };
   return (
-    <>
-      <View>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <Text style={{ color: COLOR.palesky, fontWeight: "bold", padding: 5 }}>
           My Products
         </Text>
@@ -56,7 +69,12 @@ const WishList = () => {
           />
         )}
       </View>
-    </>
+      <TouchableOpacity style={styles.postButton} onPress={handlePayment}>
+        <Text style={{ color: "#00a76f", fontSize: 18, alignSelf: "center" }}>
+          Checkout Products
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -149,5 +167,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: COLOR.palesky,
+  },
+
+  postButton: {
+    marginTop: "auto",
+    alignSelf: "center",
+    width: "80%",
+    backgroundColor: "#c7e2d9",
+    padding: 15,
+    paddingHorizontal: 50,
+    marginVertical: 10,
+    borderRadius: 10,
   },
 });

@@ -73,7 +73,6 @@ const createProductCatagory = async (req, res) => {
     namesArray.forEach((name) => {
       productCatagory.productNames.push({ name });
     });
-
     res.status(200).json(productCatagory);
   } catch (error) {
     console.log(error);

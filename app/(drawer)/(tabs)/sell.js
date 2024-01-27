@@ -5,9 +5,7 @@ import {
   ScrollView,
   ToastAndroid,
   TouchableOpacity,
-  TextInput,
   Image,
-  FlatList,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { useContext, useEffect, useState } from "react";
@@ -20,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import ProductContext from "../../../context/ProductContext";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function Sell() {
   const { authState, role, onSellerRegistration, id, setRole } = useAuth();
@@ -132,6 +131,15 @@ export default function Sell() {
     if (result && result.error) {
       alert(result.message);
     } else {
+      setCatagory("");
+      setProductName("");
+      setBrandName("");
+      setModelName("");
+      setAmount("");
+      setPrice("");
+      setCondition("");
+      setLocation("");
+      setShortDescription("");
       showToast("Product Created Successfully");
     }
   };
@@ -175,6 +183,8 @@ export default function Sell() {
   if (role === "buyer") {
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
+        <StatusBar style="dark" />
+
         <View style={styles.form}>
           <Text style={styles.formTitle}>Add Your Product</Text>
           <TextField
@@ -204,6 +214,7 @@ export default function Sell() {
   } else {
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
+        <StatusBar style="dark" />
         <View style={{ display: "flex", flexDirection: "row", width: "95%" }}>
           <TouchableOpacity style={styles.upButton} onPress={pickImage}>
             <AntDesign
@@ -328,7 +339,8 @@ export default function Sell() {
 
 const styles = StyleSheet.create({
   form: {
-    width: "100%",
+    width: "90%",
+    alignSelf: "center",
   },
   formTitle: {
     alignSelf: "center",

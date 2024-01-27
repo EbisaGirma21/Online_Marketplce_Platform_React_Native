@@ -10,6 +10,7 @@ import {
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import { COLOR } from "../../constants/color";
 import ProductContext from "../../context/ProductContext";
+import { StatusBar } from "expo-status-bar";
 
 const Product = () => {
   const { products, fetchProducts } = useContext(ProductContext);
@@ -57,6 +58,7 @@ const Product = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <Text style={{ color: COLOR.palesky, fontSize: 20 }}>
         Product Details
       </Text>

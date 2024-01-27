@@ -10,6 +10,7 @@ import {
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import { useAuth } from "../../context/AuthContext";
 import { COLOR } from "../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 const User = () => {
   const { user, fetchUsers } = useAuth();
@@ -57,6 +58,7 @@ const User = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <Table borderStyle={{ borderColor: "transparent" }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.text} />
         {tableData.map((rowData, rowIndex) => (

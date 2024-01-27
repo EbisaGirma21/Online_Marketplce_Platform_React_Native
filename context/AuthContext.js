@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 const TOKEN_KEY = "my-jwt";
 const CURRENT_USER = "user";
 const USER_ROLE = "role";
-export const API_URL = "http://10.194.65.14:8000/api";
+export const API_URL = "http://192.168.137.55:8000/api";
 
 const AuthContext = createContext();
 
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    socket.current = io("http://10.194.65.14:8900");
+    socket.current = io("http://192.168.137.55:8900");
   }, []);
 
   useEffect(() => {

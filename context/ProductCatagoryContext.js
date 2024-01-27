@@ -14,16 +14,13 @@ const ProductCatagoryProvider = ({ children }) => {
 
   const createProductCatagory = async (formData) => {
     try {
-      const response = await fetch(
-        "http://10.194.65.14:8000/api/productCatagory/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          body: formData,
-        }
-      );
+      const response = await fetch(`${API_URL}/productCatagory/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
       return response;
     } catch (e) {
       console.log(e);

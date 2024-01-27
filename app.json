@@ -4,9 +4,19 @@
     "web": {
       "bundler": "metro"
     },
-    "plugins": ["expo-router"],
-    "name": "my_market",
-    "icon": "./assets/splash.png",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "name": "My Market",
+    "icon": "./assets/icon.png",
     "slug": "mymarket",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,6 +34,9 @@
     "notification": {
       "icon": "./assets/myphoto.png"
     },
-    "owner": "ebisagirma21"
+    "owner": "ebisagirma21",
+    "android": {
+      "package": "com.ebisagirma21.mymarket"
+    }
   }
 }
