@@ -26,7 +26,9 @@ app.listen(port, () => {
 });
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mymarket")
+  .connect(
+    "mongodb+srv://marketplace:marketplace@cluster0.qp0lqio.mongodb.net/?retryWrites=true&w=majority"
+  )
   .then(() => {
     console.log("Connected to MongoDB");
   })
