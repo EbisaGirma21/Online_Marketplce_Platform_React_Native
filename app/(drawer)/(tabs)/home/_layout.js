@@ -6,6 +6,7 @@ function Layout() {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="product_detail" options={{ headerShown: false }} />
+      <Stack.Screen name="edit_product" options={{ headerShown: false }} />
     </Stack>
   );
 }

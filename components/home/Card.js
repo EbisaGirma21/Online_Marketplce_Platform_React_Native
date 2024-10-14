@@ -1,13 +1,15 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
 
-export default function Card({ productTitle }) {
+export default function Card({ productTitle, imageUrl }) {
   return (
     <View style={styles.container}>
       <Text style={styles.productTitle}>{productTitle}</Text>
       <Image
         style={styles.productImage}
-        source={require("../../assets/myImage.jpg")}
+        source={
+          imageUrl ? { uri: imageUrl } : require("../../assets/myImage.jpg")
+        }
       />
     </View>
   );
@@ -23,8 +25,8 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   productImage: {
-    width: 100,
-    height: "100%",
+    width: "100%",
+    height: "85%",
     objectFit: "contain",
     alignSelf: "center",
   },

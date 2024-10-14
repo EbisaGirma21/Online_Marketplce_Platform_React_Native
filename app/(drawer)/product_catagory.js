@@ -2,10 +2,9 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  Pressable,
   Image,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import ProductCard from "../../components/home/ProductCard";
@@ -14,14 +13,14 @@ import { COLOR } from "../../constants/color";
 import * as ImagePicker from "expo-image-picker";
 import { TextInput } from "react-native-gesture-handler";
 import ProductCatagorysContext from "../../context/ProductCatagoryContext";
-import * as FileSystem from "expo-file-system";
+import { AntDesign } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function ProductCatagory() {
   const [isAddPage, setIsAddPage] = useState(false);
 
   // my input attribute
   const [catagory, setCatagory] = useState("");
-  const [imageFile, setImageFile] = useState(null);
   const [image, setImage] = useState(null);
   const [productNames, setProductNames] = useState([]);
 
@@ -33,7 +32,7 @@ export default function ProductCatagory() {
   useEffect(() => {
     fetchProductCatagories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isAddPage]);
 
   // handling product name
   const handleProductNamesChange = (text) => {
@@ -49,9 +48,7 @@ export default function ProductCatagory() {
         quality: 1,
       });
 
-      // Use "canceled" instead of "cancelled"
       if (!result.canceled) {
-        await setFileToBase(result.assets[0].uri);
         setImage(result.assets[0].uri);
       }
     } catch (error) {
@@ -59,26 +56,24 @@ export default function ProductCatagory() {
     }
   };
 
-  const setFileToBase = async (uri) => {
-    try {
-      let fileContent = await FileSystem.readAsStringAsync(uri, {
-        encoding: "base64",
-      });
-      setImageFile(fileContent);
-    } catch (error) {
-      console.error("Error reading file:", error);
-    }
-  };
-
   const handleAddPress = async (myFlag) => {
     if (!myFlag) {
       setIsAddPage(true);
     } else {
-      const result = await createProductCatagory(
-        catagory,
-        productNames,
-        imageFile
-      );
+      const formData = new FormData();
+      if (image) {
+        const localUri = image;
+        const filename = localUri.split("/").pop();
+
+        formData.append("image", {
+          uri: localUri,
+          name: filename,
+          type: "image/jpeg",
+        });
+        formData.append("catagory", catagory);
+        formData.append("productNames", [productNames]);
+      }
+      const result = await createProductCatagory(formData);
       if (result && result.error) {
         alert(result.message);
       } else {
@@ -90,20 +85,22 @@ export default function ProductCatagory() {
 
   const renderItem = ({ item }) => (
     <View style={styles.gridItem}>
-      <ProductCard catagory={item.catagory} />
+      <ProductCard catagory={item.catagory} imageUrl={item.image.url} />
     </View>
   );
 
   if (!isAddPage) {
     return (
       <View>
+        <StatusBar style="dark" />
+
         <View style={styles.topPart}>
-          <Pressable
+          <TouchableOpacity
             style={styles.button}
             onPress={() => handleAddPress(isAddPage)}
           >
             <Text style={{ color: COLOR.jade }}>Add Catagory</Text>
-          </Pressable>
+          </TouchableOpacity>
           <View style={styles.search}>
             <TextField placeholder="Search your Catagory" />
           </View>
@@ -123,8 +120,36 @@ export default function ProductCatagory() {
   } else {
     return (
       <View style={styles.addContainer}>
+        <StatusBar style="dark" />
+
         <Text style={styles.formTitle}>Add Your Product</Text>
         <View style={styles.infoContainer}>
+          <View style={{ display: "flex", flexDirection: "row", width: "95%" }}>
+            <TouchableOpacity style={styles.upButton} onPress={pickImage}>
+              <AntDesign
+                name="cloudupload"
+                size={54}
+                color="#00a76f"
+                style={{ alignSelf: "center" }}
+              />
+              <Text
+                style={{ color: "#00a76f", fontSize: 18, alignSelf: "center" }}
+              >
+                Choose a photo
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.myImageView}>
+              {image ? (
+                <Image style={styles.myImage} source={{ uri: image }} />
+              ) : (
+                <Image
+                  style={styles.myImage}
+                  source={require("../../assets/product.png")}
+                />
+              )}
+            </View>
+          </View>
+
           <TextInput
             style={styles.textInput}
             placeholder="Catagory"
@@ -137,21 +162,8 @@ export default function ProductCatagory() {
             onChangeText={handleProductNamesChange}
             value={productNames.join(",")}
           />
-          <Pressable style={styles.button} onPress={pickImage}>
-            <Text
-              style={{ color: "#00a76f", fontSize: 18, alignSelf: "center" }}
-            >
-              Choose a photo
-            </Text>
-          </Pressable>
 
-          <View style={styles.myImageView}>
-            {image && (
-              <Image style={styles.myImageView} source={{ uri: image }} />
-            )}
-          </View>
-
-          <Pressable
+          <TouchableOpacity
             style={styles.button}
             onPress={() => handleAddPress(isAddPage)}
           >
@@ -160,7 +172,7 @@ export default function ProductCatagory() {
             >
               <Text>Add Catagory</Text>
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -168,8 +180,6 @@ export default function ProductCatagory() {
 }
 
 const styles = StyleSheet.create({
-  mainProductContainer: {},
-  gridRow: {},
   gridItem: {
     flex: 0.5,
     height: 160,
@@ -211,14 +221,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: "center",
   },
-
   myImage: {
     width: "100%",
+    height: 140,
+    objectFit: "contain",
   },
   myImageView: {
-    width: 320,
-    height: 320,
+    width: "50%",
+    height: 150,
+    borderRadius: 5,
+    margin: 5,
     alignSelf: "center",
+    backgroundColor: COLOR.jade,
+    justifyContent: "center",
+  },
+  upButton: {
+    width: "50%",
+    backgroundColor: COLOR.swansdown,
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   formTitle: {
     alignSelf: "center",

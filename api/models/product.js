@@ -7,16 +7,16 @@ const productSchema = new mongoose.Schema({
   },
   brandName: String,
   modelName: String,
-  images: [
-    {
-      public_id: {
-        type: String,
-      },
-      url: {
-        type: String,
-      },
+  image: {
+    public_id: {
+      type: String,
+      required: true,
     },
-  ],
+    url: {
+      type: String,
+      required: true,
+    },
+  },
   specification: String,
 
   amount: {

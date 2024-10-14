@@ -13,23 +13,28 @@ import {
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const ChangeEmail = () => {
-  // user Information edition
-  const [email, setEmail] = useState("");
-
   // context api
-  const { onGetuser, user } = useAuth();
+  const { onGetuser, user, updateEmail } = useAuth();
   const navigation = useNavigation();
 
   useEffect(() => {
     onGetuser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // user Information edition
+  const [email, setEmail] = useState(user.email);
 
-  const handleChangePress = () => {
-    navigation.navigate("setting");
-    showToast("Email Changed Successfully");
+  const handleChangePress = async () => {
+    const result = await updateEmail(email);
+    if (result && result.error) {
+      alert(result.message);
+    } else {
+      navigation.navigate("_setting");
+      showToast("Email Changed Successfully");
+    }
   };
 
   // toast Funtion
@@ -42,6 +47,8 @@ const ChangeEmail = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+      <StatusBar style="dark" />
+
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topContainer}>
@@ -51,7 +58,11 @@ const ChangeEmail = () => {
             </Text>
             <Image
               style={styles.mypp}
-              source={require("../../assets/myphoto.png")}
+              source={
+                user.image
+                  ? { uri: user.image.url }
+                  : require("../../assets/myphoto.png")
+              }
             />
           </View>
           <View style={styles.infoContainer}>
@@ -59,7 +70,7 @@ const ChangeEmail = () => {
               style={styles.textInput}
               placeholder="Email address"
               onChangeText={(text) => setEmail(text)}
-              value={user.email}
+              value={email}
             />
             <Pressable style={styles.editButton} onPress={handleChangePress}>
               <Text

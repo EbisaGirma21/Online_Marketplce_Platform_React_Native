@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
@@ -7,18 +7,25 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
   const navigation = useNavigation();
-  const { authState, onLogout } = useAuth();
+  const { authState, onLogout, getMyCustomer, myCustomer, id, role } =
+    useAuth();
 
+  // authState.authenticated effect
+  useEffect(() => {
+    getMyCustomer();
+  }, [id]);
   return (
     <View style={styles.container}>
       <View style={styles.navComponent}>
         {authState.authenticated ? (
-          <Ionicons
-            style={styles.icons}
-            name="menu-outline"
-            size={32}
-            onPress={() => navigation.toggleDrawer()}
-          />
+          role === "admin" ? (
+            <Ionicons
+              style={styles.icons}
+              name="menu-outline"
+              size={32}
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ) : null
         ) : null}
 
         <Text style={styles.title}>My Market</Text>
@@ -29,17 +36,23 @@ export default function Navbar() {
             <Text style={styles.buttonText}>Sign in</Text>
           </Link>
         ) : null}
-        <View>
-          <Ionicons style={styles.notsicons} name="notifications" size={24} />
-          <View style={styles.badge}>
-            <Text style={{ color: "#fff" }}>12</Text>
+        <Link href="/notification">
+          <View>
+            <Ionicons style={styles.notsicons} name="notifications" size={24} />
+            {myCustomer.customers && myCustomer.customers.length > 0 && (
+              <View style={styles.badge}>
+                <Text style={{ color: "#fff", alignSelf: "center" }}>
+                  {myCustomer.customers.length}
+                </Text>
+              </View>
+            )}
           </View>
-        </View>
+        </Link>
         <Ionicons style={styles.icons} name="cart-outline" size={24} />
         {authState.authenticated ? (
-          <Pressable onPress={onLogout}>
+          <TouchableOpacity onPress={onLogout}>
             <Text style={styles.buttonText}>Sign out</Text>
-          </Pressable>
+          </TouchableOpacity>
         ) : null}
       </View>
     </View>

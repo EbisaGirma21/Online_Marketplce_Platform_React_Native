@@ -10,6 +10,7 @@ import {
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import { useAuth } from "../../context/AuthContext";
 import { COLOR } from "../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 const User = () => {
   const { user, fetchUsers } = useAuth();
@@ -41,7 +42,14 @@ const User = () => {
   // Transform user data into table data
   const tableData = user.map((userData, index) => [
     <View style={styles.topCard}>
-      <Image style={styles.mypp} source={require("../../assets/myphoto.png")} />
+      <Image
+        style={styles.mypp}
+        source={
+          userData.image
+            ? { uri: userData.image.url }
+            : require("../../assets/myphoto.png")
+        }
+      />
     </View>, // User index
     userData.firstName,
     userData.lastName,
@@ -50,6 +58,7 @@ const User = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <Table borderStyle={{ borderColor: "transparent" }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.text} />
         {tableData.map((rowData, rowIndex) => (

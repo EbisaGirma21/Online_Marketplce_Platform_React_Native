@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Pressable,
+  TouchableOpacity,
   StyleSheet,
   Modal,
   TouchableWithoutFeedback,
-  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Stack } from "expo-router";
@@ -15,6 +14,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
+import { StatusBar } from "expo-status-bar";
 
 const Setting = () => {
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -39,89 +39,94 @@ const Setting = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
+
       <View style={styles.topCard}>
         <Text style={styles.title}>Settings</Text>
         <Text style={{ color: "#fff", fontSize: 20 }}>Account Information</Text>
       </View>
       <View style={styles.bottomCard}>
         <Text style={{ color: COLOR.palesky }}>Login and securty</Text>
-        <Pressable
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigateToScreen("personal_info")}
         >
           <View style={styles.myView}>
-            <Pressable style={styles.icons}>
+            <TouchableOpacity style={styles.icons}>
               <EvilIcons
                 name="user"
                 style={{ alignSelf: "center", color: COLOR.jade, fontSize: 25 }}
               />
-            </Pressable>
+            </TouchableOpacity>
             <Text style={styles.buttonText}>Personal Info</Text>
           </View>
           <Text style={{ color: COLOR.palesky, fontSize: 28 }}>{">"}</Text>
-        </Pressable>
-        <Pressable
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigateToScreen("change_email")}
         >
           <View style={styles.myView}>
-            <Pressable style={styles.icons}>
+            <TouchableOpacity style={styles.icons}>
               <FontAwesome
                 name="stack-exchange"
                 style={{ alignSelf: "center", color: COLOR.jade, fontSize: 18 }}
               />
-            </Pressable>
+            </TouchableOpacity>
             <Text style={styles.buttonText}>Change Email</Text>
           </View>
           <Text style={{ color: COLOR.palesky, fontSize: 28 }}>{">"}</Text>
-        </Pressable>
-        <Pressable
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigateToScreen("change_password")}
         >
           <View style={styles.myView}>
-            <Pressable style={styles.icons}>
+            <TouchableOpacity style={styles.icons}>
               <FontAwesome
                 name="exchange"
                 style={{ alignSelf: "center", color: COLOR.jade, fontSize: 18 }}
               />
-            </Pressable>
+            </TouchableOpacity>
             <Text style={styles.buttonText}>Change Password</Text>
           </View>
           <Text style={{ color: COLOR.palesky, fontSize: 28 }}>{">"}</Text>
-        </Pressable>
+        </TouchableOpacity>
         <Text style={{ color: COLOR.palesky, marginTop: 20 }}>
           Deactivate accout
         </Text>
 
-        <Pressable
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigateToScreen("delete_account")}
         >
           <View style={styles.myView}>
-            <Pressable style={styles.icons}>
+            <TouchableOpacity style={styles.icons}>
               <AntDesign
                 name="deleteusergroup"
                 style={{ alignSelf: "center", color: COLOR.jade, fontSize: 25 }}
               />
-            </Pressable>
+            </TouchableOpacity>
             <Text style={styles.buttonText}>Delete Account</Text>
           </View>
           <Text style={{ color: COLOR.palesky, fontSize: 28 }}>{">"}</Text>
-        </Pressable>
+        </TouchableOpacity>
         <Text style={{ color: COLOR.palesky, marginTop: 20 }}>Logout</Text>
-        <Pressable style={styles.logoutButton} onPress={toggleLogoutModal}>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={toggleLogoutModal}
+        >
           <View style={styles.myView}>
-            <Pressable style={styles.icons}>
+            <TouchableOpacity style={styles.icons}>
               <AntDesign
                 name="logout"
                 style={{ alignSelf: "center", color: "#e74c3c", fontSize: 18 }}
               />
-            </Pressable>
+            </TouchableOpacity>
             <Text style={styles.logoutButtonText}>Logout</Text>
           </View>
           <Text style={{ color: "#fff", fontSize: 28 }}>{">"}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       {/* Logout Confirmation Modal */}
@@ -136,12 +141,12 @@ const Setting = () => {
               Are you sure you want to logout?
             </Text>
             <View style={styles.modalBottom}>
-              <Pressable
+              <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => handleLogout(false)}
               >
                 <Text style={{ color: "#e74c3c", fontSize: 18 }}>Cancel</Text>
-              </Pressable>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => handleLogout(true)}

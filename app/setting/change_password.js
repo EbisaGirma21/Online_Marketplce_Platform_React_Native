@@ -13,6 +13,7 @@ import {
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const ChangePassword = () => {
   // user Information edition
@@ -22,7 +23,7 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // context api
-  const {  onChange, user } = useAuth();
+  const { onChange, user } = useAuth();
   const navigation = useNavigation();
 
   const handleChangePassword = async () => {
@@ -32,7 +33,7 @@ const ChangePassword = () => {
       if (result && result.error) {
         alert(result.msg);
       } else {
-        navigation.navigate("setting");
+        navigation.navigate("_setting");
         showToast("Password Changed Successfully");
       }
     } else {
@@ -40,7 +41,6 @@ const ChangePassword = () => {
     }
   };
 
-  
   // toast Funtion
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -51,6 +51,7 @@ const ChangePassword = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+      <StatusBar style="dark" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topContainer}>
@@ -60,7 +61,11 @@ const ChangePassword = () => {
             </Text>
             <Image
               style={styles.mypp}
-              source={require("../../assets/myphoto.png")}
+              source={
+                user.image
+                  ? { uri: user.image.url }
+                  : require("../../assets/myphoto.png")
+              }
             />
           </View>
           <View style={styles.infoContainer}>

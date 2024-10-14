@@ -15,15 +15,20 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "axios": "^1.6.2",
+    "date-fns": "^3.0.6",
     "expo": "^49.0.3",
     "expo-constants": "~14.4.2",
+    "expo-device": "~5.4.0",
     "expo-file-system": "~15.4.5",
     "expo-image-picker": "~14.3.2",
     "expo-linking": "~5.0.2",
+    "expo-notifications": "~0.20.1",
     "expo-router": "2.0.0",
     "expo-secure-store": "~12.3.1",
+    "expo-server-sdk": "^3.7.0",
     "expo-splash-screen": "~0.20.4",
     "expo-status-bar": "~1.6.0",
+    "multer": "^1.4.5-lts.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.5",
@@ -35,11 +40,13 @@
     "react-native-screens": "~3.22.0",
     "react-native-table-component": "^1.2.2",
     "react-native-virtualized-view": "^1.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "socket.io-client": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "@babel/plugin-proposal-export-namespace-from": "^7.18.9"
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
+    "expo-build-properties": "^0.11.0"
   },
   "resolutions": {
     "metro": "^0.73.7",

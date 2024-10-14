@@ -5,9 +5,38 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
-    "name": "my_market",
-    "slug": "my_market"
+    "name": "My Market",
+    "icon": "./assets/icon.png",
+    "slug": "mymarket",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fff"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d29e0a1a-3a9c-440b-acb3-ed371c6be510"
+      }
+    },
+    "notification": {
+      "icon": "./assets/myphoto.png"
+    },
+    "owner": "ebisagirma21",
+    "android": {
+      "package": "com.ebisagirma21.mymarket"
+    }
   }
 }

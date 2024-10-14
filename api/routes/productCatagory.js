@@ -8,13 +8,14 @@ const {
   deleteProductCatagory,
   updateProductCatagory,
 } = require("../controllers/productCatagory");
+const upload = require("../middleware/multer");
 
 const router = express.Router();
 
 // signup route
-router.post("/", createProductCatagory);
-
+router.post("/", upload.uploadListingImages, createProductCatagory);
 router.get("/", getProductCatagorys);
+// router.post("/create", uploadListingImages, createListing);
 
 router.get("/:id", getProductCatagory);
 

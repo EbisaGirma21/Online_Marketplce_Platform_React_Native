@@ -3,7 +3,12 @@ import React from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { COLOR } from "../../constants/color";
 
-export default function TextField({ autoComplete, placeholder, onChangeText }) {
+export default function TextField({
+  autoComplete,
+  placeholder,
+  value,
+  onChangeText,
+}) {
   return (
     <View>
       <TextInput
@@ -11,6 +16,8 @@ export default function TextField({ autoComplete, placeholder, onChangeText }) {
         style={styles.searchInput}
         placeholder={placeholder}
         onChangeText={onChangeText}
+        
+        value={value}
       />
     </View>
   );

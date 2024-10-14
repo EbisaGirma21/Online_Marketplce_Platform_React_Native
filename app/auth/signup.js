@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Link } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -20,27 +21,39 @@ export default function Signup() {
   const navigation = useNavigation();
 
   const handleSignupPress = async () => {
-    if (password === consfirmPassword) {
-      const result = await onRegister(
-        firstName,
-        lastName,
-        address,
-        phoneNumber,
-        email,
-        password
-      );
-      if (result && result.error) {
-        alert(result.message);
-      } else {
-        navigation.navigate("signin");
-      }
+    if (
+      !firstName ||
+      !lastName ||
+      !address ||
+      !phoneNumber ||
+      !email ||
+      !password
+    ) {
+      alert("Please fill all feilds");
     } else {
-      alert("Password dont match");
+      if (password === consfirmPassword) {
+        const result = await onRegister(
+          firstName,
+          lastName,
+          address,
+          phoneNumber,
+          email,
+          password
+        );
+        if (result && result.error) {
+          alert(result.message);
+        } else {
+          navigation.navigate("signin");
+        }
+      } else {
+        alert("Password dont match");
+      }
     }
   };
 
   return (
     <View style={styles.mainContainer}>
+      <StatusBar style="dark" />
       <ScrollView
         style={{ width: "100%" }}
         showsVerticalScrollIndicator={false}
@@ -91,9 +104,9 @@ export default function Signup() {
             onChangeText={(text) => setConfirmPassword(text)}
             value={consfirmPassword}
           />
-          <Pressable style={styles.button} onPress={handleSignupPress}>
+          <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
             <Text style={styles.buttonText}>Sign up</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 

@@ -32,6 +32,18 @@ function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="forgot_password"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="notification"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

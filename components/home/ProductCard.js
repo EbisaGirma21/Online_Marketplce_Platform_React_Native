@@ -2,13 +2,15 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
-export default function ProductCard({ catagory }) {
+export default function ProductCard({ catagory, imageUrl }) {
   return (
     <View style={styles.container}>
       <Text style={styles.productTitle}>{catagory}</Text>
       <Image
         style={styles.productImage}
-        source={require("../../assets/myImage.jpg")}
+        source={
+          imageUrl ? { uri: imageUrl } : require("../../assets/myImage.jpg")
+        }
       />
     </View>
   );

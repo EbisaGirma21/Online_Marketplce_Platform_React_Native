@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 import { API_URL } from "./AuthContext";
 
@@ -12,16 +12,18 @@ const ProductCatagoryProvider = ({ children }) => {
     setProductCatagories(response.data);
   };
 
-  const createProductCatagory = async (catagory, productNames, image) => {
+  const createProductCatagory = async (formData) => {
     try {
-      const response = await axios.post(`${API_URL}/productCatagory`, {
-        catagory,
-        productNames,
-        image,
+      const response = await fetch(`${API_URL}/productCatagory/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
       });
-
       return response;
     } catch (e) {
+      console.log(e);
       return { error: true, message: e.response.data.message };
     }
   };

@@ -1,24 +1,10 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Pressable,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ToastAndroid,
-} from "react-native";
-import {
-  AntDesign,
-  Entypo,
-  FontAwesome,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { COLOR } from "../../../constants/color";
+import { StatusBar } from "expo-status-bar";
 
 export default function Profile() {
   const { authState, onGetuser, user, id } = useAuth();
@@ -40,8 +26,11 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  return (
+  return user === null ? (
+    <ActivityIndicator style={styles.spinner} size="large" color={COLOR.jade} />
+  ) : (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <View style={styles.topContainer}>
         <View style={styles.halfCircle} />
         <Text style={styles.myname}>
@@ -49,7 +38,11 @@ export default function Profile() {
         </Text>
         <Image
           style={styles.mypp}
-          source={require("../../../assets/myphoto.png")}
+          source={
+            user.image && user.image.url
+              ? { uri: user.image.url }
+              : require("../../../assets/myphoto.png")
+          }
         />
       </View>
       <View style={styles.infoContainer}>
@@ -88,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   halfCircle: {
-    backgroundColor: "#c7e2d9",
+    backgroundColor: COLOR.swansdown,
     width: 460,
     height: 230,
     borderBottomLeftRadius: 230,
@@ -118,14 +111,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#00a76f",
     position: "absolute",
-    top: 110,
+    top: 90,
   },
   mypp: {
-    width: 70,
-    height: 70,
+    width: 100,
+    height: 100,
     borderRadius: 50,
     position: "absolute",
-    top: 140,
+    top: 120,
   },
   editButton: {
     backgroundColor: "#c7e2d9",
