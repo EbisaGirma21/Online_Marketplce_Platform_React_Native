@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 const TOKEN_KEY = "my-jwt";
 const CURRENT_USER = "user";
 const USER_ROLE = "role";
-export const API_URL = "http://10.194.65.14:8000/api";
+export const API_URL = "http://10.194.65.25:3000/api";
 const AuthContext = createContext();
 
 export const useAuth = () => {

@@ -54,7 +54,7 @@ export default function Home() {
   );
   const renderItem1 = ({ item }) => (
     <Pressable style={styles.categoryButton}>
-      <Text style={styles.myOption}>{item.catagory}</Text>
+      <Text style={styles.myOption}>{item.categoryName}</Text>
     </Pressable>
   );
   const renderItem2 = ({ item }) => (

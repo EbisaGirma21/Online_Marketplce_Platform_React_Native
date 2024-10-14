@@ -8,7 +8,7 @@ const ProductCatagoryProvider = ({ children }) => {
   const [productCatagories, setProductCatagories] = useState([]);
 
   const fetchProductCatagories = async () => {
-    const response = await axios.get(`${API_URL}/productCatagory`);
+    const response = await axios.get(`${API_URL}/productcatagory`);
     setProductCatagories(response.data);
   };
 
